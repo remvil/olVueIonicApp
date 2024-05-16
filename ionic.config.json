@@ -1,0 +1,7 @@
+{
+  "name": "olVueIonicApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
