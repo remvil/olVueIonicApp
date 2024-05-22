@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
 	<ion-page>
 		<ion-header>
 			<ion-toolbar>
@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue';
 import ExploreContainer from '@/components/ExploreContainer.vue';
-</script> -->
+</script>
 
 
 <!-- Esempio shapes -->
@@ -72,10 +72,10 @@ const webglPolyStyle = {
 	"stroke-color": "rgba(24,86,34,0.4)",
 	"fill-color": "#0000ff40",
 };
-</script> -->
+</script>
 
 
-<template>
+<!-- <template>
 	<ol-map :loadTilesWhileAnimating="true" :loadTilesWhileInteracting="true" style="height: 400px">
 		<ol-view ref="view" :center="center" :zoom="zoom" :projection="projection" />
 		<ol-zoom-control />
@@ -103,4 +103,4 @@ const projection = reactive({
 // const imgUrl = ref("https://e7.pngegg.com/pngimages/647/669/png-clipart-house-plan-floor-plan-architecture-house-angle-building-thumbnail.png");
 const imgUrl = ref("imgs/cutilia-building.png");
 // const imgUrl = ref("imgs/planimetryexample.ppm");
-</script>
+</script> -->
