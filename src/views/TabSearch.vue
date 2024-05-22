@@ -81,8 +81,8 @@ const webglPolyStyle = {
 		<ol-zoom-control />
 		<ol-attribution-control />
 		<ol-image-layer id="xkcd">
-			<ol-source-image-static :url="imgUrl" :imageSize="size" :imageExtent="extent" :projection="projection"
-				:attributions="imgCopyright"></ol-source-image-static>
+			<ol-source-image-static :url="imgUrl" :imageSize="size" :imageExtent="extent"
+				:projection="projection"></ol-source-image-static>
 		</ol-image-layer>
 	</ol-map>
 </template>
@@ -90,15 +90,17 @@ const webglPolyStyle = {
 <script setup>
 import { ref, reactive } from "vue";
 
-const zoom = ref(2);
+const zoom = ref(0);
 const size = ref([1, 1]);
 const center = ref([size.value[0] / 2, size.value[1] / 2]);
-const extent = ref([0, 0, ...size.value]);
+const extent = ref([0.1, 0.2, ...size.value]);
 const projection = reactive({
 	code: "xkcd-image",
 	units: "pixels",
 	extent: extent,
 });
-const imgUrl = ref("https://imgs.xkcd.com/comics/online_communities.png");
-const imgCopyright = ref('© <a href="http://xkcd.com/license.html">xkcd</a>');
+// const imgUrl = ref("https://imgs.xkcd.com/comics/online_communities.png");
+// const imgUrl = ref("https://e7.pngegg.com/pngimages/647/669/png-clipart-house-plan-floor-plan-architecture-house-angle-building-thumbnail.png");
+const imgUrl = ref("imgs/cutilia-building.png");
+// const imgUrl = ref("imgs/planimetryexample.ppm");
 </script>

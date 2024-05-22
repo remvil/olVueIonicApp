@@ -24,16 +24,24 @@
 				<ol-view ref="view" :center="center" :rotation="rotation" :zoom="zoom" :projection="projection"
 					@change:center="centerChanged" @change:resolution="resolutionChanged" @change:rotation="rotationChanged" />
 
-				<ol-tile-layer>
-					<ol-source-osm crossOrigin="anonymous" />
-				</ol-tile-layer>
+				<ol-layer-group :opacity="1">
+					<ol-tile-layer>
+						<ol-source-osm crossOrigin="anonymous" />
+					</ol-tile-layer>
 
-				<ol-webgl-vector-layer :styles="webglLineStyle">
-					<ol-source-vector :format="geoJson" crossOrigin="anonymous" url="geojson/percorso.geojson" />
-				</ol-webgl-vector-layer>
+					<ol-image-layer id="xkcd">
+						<ol-source-image-static :url="imgUrl" :imageSize="size" :imageExtent="extent"
+							:projection="projectionImg"></ol-source-image-static>
+					</ol-image-layer>
 
-				<ol-rotate-control></ol-rotate-control>
-				<ol-interaction-link />
+
+					<ol-webgl-vector-layer :styles="webglLineStyle">
+						<ol-source-vector :format="geoJson" crossOrigin="anonymous" url="geojson/percorso.geojson" />
+					</ol-webgl-vector-layer>
+
+					<!-- <ol-rotate-control></ol-rotate-control> -->
+					<ol-interaction-link />
+				</ol-layer-group>
 			</ol-map>
 
 			<ul>
@@ -76,6 +84,16 @@ const webglLineStyle = {
 	"stroke-color": "rgba(255,6,34,0.7)",
 };
 
+const imgUrl = ref("imgs/cutilia-building.png");
+// const imgUrl = ref("https://imgs.xkcd.com/comics/online_communities.png");
+const size = ref([100, 900]);
+// const centerImg = ref([size.value[0] / 2, size.value[1] / 2]);
+const extent = ref([1392545.6062, 5142840.6205, 1392739.6845, 5142985.1342]);
+const projectionImg = reactive({
+	code: "xkcd-image",
+	units: "pixels",
+	extent: extent,
+});
 
 Geolocation.getCurrentPosition()
 	.then(el => {
