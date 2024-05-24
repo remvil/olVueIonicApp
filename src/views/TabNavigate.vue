@@ -8,38 +8,45 @@
 				</ion-toolbar>
 			</ion-header>
 
-			<!-- <form>
-				<label for="zoom" style="width: 50px; margin-left: 10px;">Zoom:</label>
-				<input type="number" id="zoom" v-model="zoom" style="width: 50px; margin-left: 5px;" />
-				<label for="rotation" style="width: 50px; margin-left: 10px;">Rotation:</label>
-				<input type="number" id="rotation" v-model="rotation" style="width: 50px; margin-left: 5px;" />
-			</form> -->
-
-			<ol-map class="map-container" style="height: 70vh" :loadTilesWhileAnimating="true"
+			<!-- <ol-source-vector :url=geojsonUrl ref="sourceRef" /> -->
+			<ol-map class="map-container" style="height: 90vh" :loadTilesWhileAnimating="true"
 				:loadTilesWhileInteracting="true">
-				<ol-view ref="view" :center="center" :rotation="rotation" :zoom="zoom" :projection="projection" :minZoom="18"
+				<ol-view ref="view" :center="center" :rotation="rotation" :zoom="zoom" :projection="projection" :minZoom="19"
 					@change:center="centerChanged" @change:resolution="resolutionChanged" @change:rotation="rotationChanged" />
 
 				<ol-layer-group :opacity="1">
+					<!-- Mappa Layer 0 -->
 					<ol-tile-layer>
-						<!-- <ol-source-osm crossOrigin="anonymous" /> -->
+						<ol-source-osm crossOrigin="anonymous" />
 					</ol-tile-layer>
 
+					<!-- Img Cutilia -->
 					<ol-image-layer id="xkcd">
-						<ol-source-image-static :url="imgUrl" :imageSize="size" :imageExtent="extent"
-							:projection="projectionImg"></ol-source-image-static>
+						<ol-source-image-static :url="imgUrlCutilia" :imageSize="sizeCutilia" :imageExtent="extentCutilia"
+							:projection="projectionImgCutilia"></ol-source-image-static>
 					</ol-image-layer>
 
+					<!-- Img Infotel -->
+					<ol-image-layer id="xkcd">
+						<ol-source-image-static :url="imgUrlInfotel" :imageSize="sizeInfotel" :imageExtent="extentInfotel"
+							:projection="projectionImgInfotel" :rotation="45"></ol-source-image-static>
+					</ol-image-layer>
 
+					<!-- Features percorso -->
 					<ol-webgl-vector-layer :styles="webglLineStyle">
 						<ol-source-vector :format="geoJson" crossOrigin="anonymous" url="geojson/percorso.geojson" />
+					</ol-webgl-vector-layer>
+
+					<!-- Feature perimetro Infotel -->
+					<ol-webgl-vector-layer :styles="webglLineStylePerimetro">
+						<ol-source-vector :format="geoJson" crossOrigin="anonymous" url="geojson/perimetro_infotel.geojson" />
 					</ol-webgl-vector-layer>
 
 					<!-- <ol-rotate-control></ol-rotate-control> -->
 
 					<!-- Event handler Drag -->
-					<ol-interaction-pointer @down="log('⬇️ down', $event)" @up="log('⬆️ up', $event)"
-						@drag="log('🤚🏽 drag', $event)" @move="log('🚗 move', $event)" />
+					<!-- <ol-interaction-pointer @down="log('⬇️ down', $event)" @up="log('⬆️ up', $event)"
+						@drag="log('🤚🏽 drag', $event)" @move="log('🚗 move', $event)" /> -->
 
 					<ol-interaction-link />
 
@@ -74,22 +81,21 @@
 <script setup lang="ts">
 import { ref, inject, reactive } from "vue";
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue';
-// import { Geolocation } from '@capacitor/geolocation';
 import type { ObjectEvent } from "ol/Object";
-import type { MapBrowserEvent, View } from "ol";
+import type { View } from "ol";
+import proj4 from "proj4";
+// import { GeoJSON } from "ol/format";
 
-// import hereIcon from "@/imgs/here.png";
-// console.log(hereIcon);
 
-
-// import proj4 from 'proj4'
-// let lat = 0;
-// let lon = 0;
-// let centerEPSG3857 = [1392627.5909088855, 5142874.478341418];
 const projection = ref("EPSG:3857"); //  EPSG:4326 or EPSG:3857
 
-const center = ref([1392627.5909088855, 5142874.478341418]);
-const zoom = ref(20);
+// Center Cutilia
+// const center = ref([1392627.5909088855, 5142874.478341418]); 
+// Center Via degli Imbimbo
+// const center = ref([1646191.7949547486, 5000527.044859039]);
+// Center Infotel
+const center = ref([1652960.865991945, 4958960.611020285]);
+const zoom = ref(21);
 const rotation = ref(0);
 
 const currentCenter = ref(center.value);
@@ -105,55 +111,46 @@ const webglLineStyle = {
 	"stroke-color": "rgba(255,6,34,0.7)",
 };
 
+// Perimetro Infotel
+const webglLineStylePerimetro = {
+	"stroke-width": 3,
+	"stroke-color": "rgba(255,6,34,0.7)",
+}
+
 // Image
-const imgUrl = ref("imgs/cutilia-building.png");
-const here = ref("imgs/here.png");
-// const imgUrl = ref("imgs/planex.png");
-const size = ref([100, 900]);
-const extent = ref([1392545.6062, 5142840.6205, 1392739.6845, 5142985.1342]);
-const projectionImg = reactive({
+const imgUrlCutilia = ref("imgs/cutilia-building.png");
+const imgUrlInfotel = ref("imgs/infotel-plan.png");
+const sizeCutilia = ref([100, 900]);
+const extentCutilia = ref([1392545.6062, 5142840.6205, 1392739.6845, 5142985.1342]);
+const sizeInfotel = ref([900, 900]);
+const extentInfotel = ref([1652918.5089, 4958912.2427, 1652970.9849, 4958964.7887])
+const projectionImgCutilia = reactive({
 	code: "xkcd-image",
 	units: "pixels",
-	extent: extent,
+	extent: extentCutilia,
+});
+const projectionImgInfotel = reactive({
+	code: "xkcd-image",
+	units: "pixels",
+	extent: extentInfotel,
 });
 
-// Point
-const log = (type: string, event: MapBrowserEvent<UIEvent>) => {
-	console.log(type, event);
-};
 
+// Point - geolocalizzazione
+const here = ref("imgs/here.png");
 const view = ref<View>();
-const position = ref([]);
+// Fake position Infotel
+const position = ref([1652960.865991945, 4958960.611020285]);
+// const position = ref([]);
 const geoLocChange = (event: ObjectEvent) => {
-	console.log("AAAAA", event);
+	console.log("geoLocChange: ", event);
 	position.value = event.target.getPosition();
-	view.value?.setCenter(event.target?.getPosition());
+	// view.value?.setCenter(event.target?.getPosition());
+	// Fake position Infotel
+	view.value?.setCenter([1652960.865991945, 4958960.611020285]);
 };
-// Geolocation.getCurrentPosition()
-// 	.then(el => {
-// 		lat = el.coords.latitude;
-// 		lon = el.coords.longitude;
-// 		centerEPSG3857 = proj4("EPSG:4326", "EPSG:3857", [lon, lat]);
-// 		console.log('centerEPSG3857:');
-// 		console.log(centerEPSG3857);
 
-// 	})
-// 	.catch()
-// 	.finally(() => {
-
-// 	});
-
-// const center = ref(proj4("EPSG:4326", "EPSG:3857", [lon, lat]));
 // console.log(proj4("EPSG:4326", "EPSG:3857", [lon, lat]));
-// const center = ref(centerEPSG3857);
-// const projection = ref("EPSG:3857"); //  EPSG:4326 or  EPSG:3857
-// const zoom = ref(18);
-// const rotation = ref(0);
-
-// const currentCenter = ref(center.value);
-// const currentZoom = ref(zoom.value);
-// const currentRotation = ref(rotation.value);
-// const currentResolution = ref(0);
 
 function resolutionChanged(event: any) {
 	currentResolution.value = event.target.getResolution();
@@ -165,12 +162,30 @@ function centerChanged(event: any) {
 function rotationChanged(event: any) {
 	currentRotation.value = event.target.getRotation();
 }
+getGeoJsonBBox();
+
+function getGeoJsonBBox() {
+	const features = [[14.8488468, 40.6370796], [14.848775, 40.6371295], [14.8487435, 40.637102], [14.8487334, 40.6371086], [14.8487234, 40.6371005], [14.8487113, 40.6371086], [14.8486295, 40.6370394], [14.8486147, 40.6370476], [14.8485933, 40.6370283], [14.8485779, 40.6370374], [14.848435, 40.6369178], [14.8484612, 40.6369005], [14.8484196, 40.6368644], [14.8484947, 40.6368089], [14.8485001, 40.6368135], [14.848537, 40.6367871], [14.8485564, 40.6368033], [14.8486047, 40.6367713], [14.8487267, 40.6369097], [14.8487576, 40.6368873], [14.848891, 40.6370466], [14.8488468, 40.6370796]];
+	let minLon = 1000;
+	let minLat = 1000;
+	let maxLon = 0;
+	let maxLat = 0;
+	features.forEach(element => {
+		minLon = (element[0] < minLon) ? element[0] : minLon;
+		minLat = (element[1] < minLat) ? element[1] : minLat;
+		maxLon = (element[0] > maxLon) ? element[0] : maxLon;
+		maxLat = (element[1] > maxLat) ? element[1] : maxLat;
+	});
+	// console.log([minLon, minLat, maxLon, maxLat]);
+	console.log(proj4("EPSG:4326", "EPSG:3857", [minLon, minLat]));
+	console.log(proj4("EPSG:4326", "EPSG:3857", [maxLon, maxLat]));
+}
 
 </script>
 
 <style scoped>
 ion-content {
-	--background: #D62828;
+	/* --background: #D62828; */
 
 	ion-toolbar {
 		--background: #D62828;
