@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  fe:
+    hostname: ival-fe
+    container_name: ival-fe
+    build:
+      context: ./frontend
+    ports:
+      - "8100:8100"
+    working_dir: /usr/src/ionic-app
+    command: ionic serve --external
+    volumes:
+      - ./frontend:/ionic-app
+    depends_on:
+      - be
+    networks:
+      - ionic-nw
+  be:
+    hostname: ival-be
+    container_name: ival-be
+    build:
+      context: ./bff
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./bff:/bff-app
+      - /bff/node_modules
+    networks:
+      - ionic-nw
+volumes:
+  persistent:
+networks:
+  ionic-nw:
+    driver: bridge
