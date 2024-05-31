@@ -127,8 +127,8 @@ onMounted(async () => {
 	try {
 		// Esempio di chiamata API per ottenere dati da una risorsa
 		perimetroGeojsonData.value = await apiService.getResource('geojsonPerimetro');
-		console.log(perimetroGeojsonData);
-		// console.log('WEEEEEE')
+		console.log(perimetroGeojsonData.value);
+		console.log('WEEEEEE')
 	} catch (error) {
 		console.error('Errore durante la richiesta API:', error);
 	}
