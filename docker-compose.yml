@@ -6,11 +6,10 @@ services:
       context: ./frontend
     ports:
       - "8100:8100"
-    working_dir: /usr/src/ionic-app
+      - "5173:5173"
     volumes:
-      - ./frontend:/ionic-app
-    depends_on:
-      - be
+      - ./frontend:/usr/src/ionic-app
+      - /usr/src/ionic-app/node_modules
     networks:
       - ionic-nw
 
@@ -28,7 +27,7 @@ services:
       - ionic-nw
 
 volumes:
-  ionicdata:
+  persistent:
 
 
 networks:

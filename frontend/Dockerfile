@@ -21,9 +21,8 @@ COPY package*.json ./
 
 # Espone la porta per il server di sviluppo Ionic
 EXPOSE 5173
-
-# Aggiungi node_modules/.bin al PATH
-# ENV PATH /ionic-app/node_modules/.bin:$PATH
+EXPOSE 8100
 
 # Comando di avvio del server di sviluppo Ionic
-CMD ["ionic", "serve", "--external", "--poll", "200", "--host=0.0.0.0", "--port=8100"]
+# CMD ["ionic", "serve", "--external", "--poll", "200", "--host=0.0.0.0", "--port=8100"]
+CMD ["npm", "run", "devhost", "--", "--host=0.0.0.0"]
