@@ -2,12 +2,12 @@
 FROM node:lts-alpine AS builder
 
 # Imposta la directory di lavoro nel container
-WORKDIR /bff-app
+WORKDIR /usr/src/bff-app
 
 # Copia il package.json e il package-lock.json (se presente)
-COPY package*.json ./
+COPY package.json package-lock.json ./
 
-# Installa le dipendenze del progetto
+	# Installa le dipendenze del progetto
 RUN npm install
 
 # Copia i file del progetto nella directory di lavoro del container
@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 3000
 
 # Comando di avvio del backend
-CMD ["npm", "run", "start"]
+# CMD ["npm", "run", "start"]

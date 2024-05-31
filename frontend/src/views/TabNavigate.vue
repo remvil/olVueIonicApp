@@ -38,8 +38,12 @@
 					</ol-webgl-vector-layer>
 
 					<!-- Feature perimetro Infotel -->
+					<!-- // TODO integrare la chiamata -->
 					<ol-webgl-vector-layer :styles="webglLineStylePerimetro">
-						<ol-source-vector :format="geoJson" crossOrigin="anonymous" url="geojson/perimetro_infotel.geojson" />
+						<!-- <ol-source-vector :format="geoJson" crossOrigin="anonymous" url="geojson/perimetro_infotel.geojson" /> -->
+						<ol-source-vector :format="geoJson" crossOrigin="anonymous"
+							:url="perimetroGeojsonData ? 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(perimetroGeojsonData)) : null" />
+
 					</ol-webgl-vector-layer>
 
 					<!-- <ol-rotate-control></ol-rotate-control> -->
@@ -79,11 +83,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, inject, reactive } from "vue";
+import { ref, inject, reactive, onMounted } from "vue";
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue';
 import type { ObjectEvent } from "ol/Object";
 import type { View } from "ol";
 import proj4 from "proj4";
+import { apiService } from '@/services/api'; // Importa il servizio API
 // import { GeoJSON } from "ol/format";
 
 
@@ -116,6 +121,18 @@ const webglLineStylePerimetro = {
 	"stroke-width": 3,
 	"stroke-color": "rgba(255,6,34,0.7)",
 }
+const perimetroGeojsonData = ref(null);
+// Effettua una chiamata API quando il componente viene montato
+onMounted(async () => {
+	try {
+		// Esempio di chiamata API per ottenere dati da una risorsa
+		perimetroGeojsonData.value = await apiService.getResource('geojsonPerimetro');
+		console.log(perimetroGeojsonData);
+		// console.log('WEEEEEE')
+	} catch (error) {
+		console.error('Errore durante la richiesta API:', error);
+	}
+});
 
 // Image
 const imgUrlCutilia = ref("imgs/cutilia-building.png");
@@ -144,10 +161,10 @@ const position = ref([1652960.865991945, 4958960.611020285]);
 // const position = ref([]);
 const geoLocChange = (event: ObjectEvent) => {
 	console.log("geoLocChange: ", event);
-	position.value = event.target.getPosition();
-	// view.value?.setCenter(event.target?.getPosition());
-	// Fake position Infotel
-	view.value?.setCenter([1652960.865991945, 4958960.611020285]);
+	// position.value = event.target.getPosition();
+	// // view.value?.setCenter(event.target?.getPosition());
+	// // Fake position Infotel
+	// view.value?.setCenter([1652960.865991945, 4958960.611020285]);
 };
 
 // console.log(proj4("EPSG:4326", "EPSG:3857", [lon, lat]));

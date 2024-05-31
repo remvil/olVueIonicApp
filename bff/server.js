@@ -24,7 +24,7 @@ app.post("/api/data", (req, res) => {
 	res.json({receivedData: data});
 });
 
-app.get("/api/geojson", (req, res) => {
+app.get("/api/geojsonPerimetro", (req, res) => {
 	const geojsonFilePath = path.join(__dirname, "data/geojson/perimetro_infotel.geojson");
 	fs.readFile(geojsonFilePath, "utf8", (err, data) => {
 		if (err) {
