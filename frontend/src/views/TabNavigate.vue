@@ -239,7 +239,7 @@ ion-content {
 			#d7d7d7 20px);
 }
 
-.ol-map-loading:after {
+/* .ol-map-loading:after {
 	content: "";
 	box-sizing: border-box;
 	position: absolute;
@@ -259,5 +259,5 @@ ion-content {
 	to {
 		transform: rotate(360deg);
 	}
-}
+} */
 </style>

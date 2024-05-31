@@ -1,15 +1,18 @@
 // Importa le librerie e i moduli necessari
-const swaggerUi = require("swagger-ui-express");
 const express = require("express");
-const bodyParser = require("body-parser");
 const cors = require("cors");
-const path = require("path"); // Modulo path built-in
-const fs = require("fs"); // Modulo fs built-in
+const bodyParser = require("body-parser");
+const path = require("path");
+const fs = require("fs");
+const swaggerUi = require("swagger-ui-express");
+const {apiRouter} = require("./src/api");
 const swaggerJson = JSON.parse(fs.readFileSync(`${path.resolve()}/swagger.json`));
 const app = express();
+require("dotenv").config();
 
 // Configura il middleware
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
+app.use(express.json());
 app.use(cors());
 
 // Configura le rotte
@@ -18,31 +21,13 @@ app.get("/", (req, res) => {
 	res.send("Hello from the backend!!");
 });
 
-// Route API DOCS
+// Routes SWAGGER API DOCS
 app.use("/api-docs/", swaggerUi.serve, swaggerUi.setup(swaggerJson));
-
-app.get("/api/data", (req, res) => {
-	res.json({message: "This is some data from the backend!"});
-});
-
-app.post("/api/data", (req, res) => {
-	const data = req.body;
-	res.json({receivedData: data});
-});
-
-app.get("/api/geojsonPerimetro", (req, res) => {
-	const geojsonFilePath = path.join(__dirname, "data/geojson/perimetro_infotel.geojson");
-	fs.readFile(geojsonFilePath, "utf8", (err, data) => {
-		if (err) {
-			return res.status(500).json({error: "Unable to read GeoJSON file"});
-		}
-		const geojson = JSON.parse(data);
-		res.json(geojson);
-	});
-});
+app.use("/api", apiRouter);
 
 // Avvia il server
-const port = process.env.PORT || 3000;
+const port = process.env.SERVER_PORT || 4000;
+const environment = process.env.ENVIRONMENT_NAME || "none";
 app.listen(port, () => {
-	console.log(`Backend listening at http://localhost:${port}`);
+	console.log(`BFF listening at http://localhost:${port} on ${environment} environment`);
 });
