@@ -12,7 +12,7 @@ app.use(cors());
 
 // Configura le rotte
 app.get("/", (req, res) => {
-	res.send("Hello from the backend!");
+	res.send("Hello from the backend!1!");
 });
 
 app.get("/api/data", (req, res) => {

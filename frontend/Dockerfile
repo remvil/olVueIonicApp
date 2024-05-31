@@ -14,16 +14,16 @@ RUN npm i -g @ionic/cli
 RUN npm install
 
 # Copia i file del progetto nella directory di lavoro del container
-COPY . /usr/src/ionic-app
+COPY . .
 
 # Copia il package.json e il package-lock.json (se presente)
 COPY package*.json ./
 
 # Espone la porta per il server di sviluppo Ionic
-EXPOSE 8100
+EXPOSE 5173
 
 # Aggiungi node_modules/.bin al PATH
 # ENV PATH /ionic-app/node_modules/.bin:$PATH
 
 # Comando di avvio del server di sviluppo Ionic
-# CMD ["ionic", "run", "dev"]
+CMD ["ionic", "serve", "--external", "--poll", "200", "--host=0.0.0.0", "--port=8100"]

@@ -5,10 +5,13 @@ FROM node:lts-alpine AS builder
 WORKDIR /usr/src/bff-app
 
 # Copia il package.json e il package-lock.json (se presente)
-COPY package.json package-lock.json ./
+COPY package.json ./
 
-	# Installa le dipendenze del progetto
+# Installa le dipendenze del progetto
 RUN npm install
+
+# Installa nodemon globalmente
+RUN npm install -g nodemon
 
 # Copia i file del progetto nella directory di lavoro del container
 COPY . .
@@ -16,5 +19,5 @@ COPY . .
 # Espone la porta per il server di sviluppo backend
 EXPOSE 3000
 
-# Comando di avvio del backend
-# CMD ["npm", "run", "start"]
+# Comando di avvio del backend con nodemon
+CMD ["nodemon", "server.js"]

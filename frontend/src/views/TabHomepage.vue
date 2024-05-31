@@ -11,7 +11,6 @@
 					<ion-title size="large">Home page</ion-title>
 				</ion-toolbar>
 			</ion-header>
-
 			<HomeContainer name="Homepage text name component property" />
 		</ion-content>
 	</ion-page>

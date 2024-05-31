@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   fe:
     hostname: ival-fe
@@ -9,13 +7,13 @@ services:
     ports:
       - "8100:8100"
     working_dir: /usr/src/ionic-app
-    command: ionic serve --external --poll 200 --host=0.0.0.0 --port=8100
     volumes:
       - ./frontend:/ionic-app
     depends_on:
       - be
     networks:
       - ionic-nw
+
   be:
     hostname: ival-be
     container_name: ival-be
@@ -24,14 +22,15 @@ services:
     ports:
       - "3000:3000"
     working_dir: /usr/src/bff-app
-    command: npm run start
     volumes:
-      - ./bff:/bff-app
-      # - /bff/node_modules
+      - ./bff:/usr/src/bff-app
     networks:
       - ionic-nw
+
 volumes:
   ionicdata:
+
+
 networks:
   ionic-nw:
     driver: bridge
