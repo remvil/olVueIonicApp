@@ -1,27 +1,25 @@
-// Importa le librerie e i moduli necessari
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const path = require("path");
-const fs = require("fs");
-const swaggerUi = require("swagger-ui-express");
-const {apiRouter} = require("./src/api");
-const swaggerJson = JSON.parse(fs.readFileSync(`${path.resolve()}/swagger.json`));
+import express from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
+import path from "path";
+import fs from "fs";
+import swaggerUi from "swagger-ui-express";
+import {apiRouter} from "./api/index"; // Senza estensione .ts
+import dotenv from "dotenv";
+dotenv.config();
+
+const swaggerJson = JSON.parse(fs.readFileSync(`${path.resolve()}/swagger.json`, "utf-8"));
 const app = express();
-require("dotenv").config();
 
 // Configura il middleware
-// app.use(bodyParser.json());
 app.use(express.json());
 app.use(cors());
 
-// Configura le rotte
-// Route /
+// Configura le routes
 app.get("/", (req, res) => {
 	res.send("Hello from the backend!!");
 });
 
-// Routes SWAGGER API DOCS
 app.use("/api-docs/", swaggerUi.serve, swaggerUi.setup(swaggerJson));
 app.use("/api", apiRouter);
 

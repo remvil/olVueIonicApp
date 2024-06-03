@@ -20,9 +20,9 @@ services:
       context: ./bff
     ports:
       - "3000:3000"
-    working_dir: /usr/src/bff-app
+    working_dir: /usr/bff-app
     volumes:
-      - ./bff:/usr/src/bff-app
+      - ./bff:/usr/bff-app
     networks:
       - ionic-nw
 

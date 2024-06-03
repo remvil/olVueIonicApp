@@ -2,7 +2,7 @@
 FROM node:lts-alpine AS builder
 
 # Imposta la directory di lavoro nel container
-WORKDIR /usr/src/bff-app
+WORKDIR /usr/bff-app
 
 # Copia il package.json e il package-lock.json (se presente)
 COPY package.json ./
@@ -11,7 +11,7 @@ COPY package.json ./
 RUN npm install
 
 # Installa nodemon globalmente
-RUN npm install -g nodemon
+RUN npm install -g typescript ts-node nodemon
 
 # Copia i file del progetto nella directory di lavoro del container
 COPY . .
@@ -20,4 +20,4 @@ COPY . .
 EXPOSE 3000
 
 # Comando di avvio del backend con nodemon
-CMD ["nodemon", "server.js"]
+CMD ["npm", "run", "dev"]
