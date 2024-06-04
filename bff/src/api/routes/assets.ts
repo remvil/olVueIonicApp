@@ -25,4 +25,6 @@ export const assetsRouter = express.Router();
  *     security:
  *       - Authorization: []
  */
-assetsRouter.get("/", );
+assetsRouter.get("/", 
+	
+);
