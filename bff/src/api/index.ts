@@ -25,8 +25,8 @@ export const apiRouter = express.Router();
  *    $ref: '#/components/schemas/GenericError'
  *
  */
-apiRouter.get("/healthcheck", (_req: Request, res: Response) => res.json({ message: `I'm alive and answering on port ${SERVER_PORT}` }));
+apiRouter.get("/healthcheck", (_req: Request, res: Response) => res.json({message: `I'm alive and answering on port ${SERVER_PORT}`}));
 
-apiRouter.use("assets", assetsRouter);
-apiRouter.use("map", mapRouter);
-apiRouter.use("paths", pathsRouter);
+apiRouter.use("/assets", assetsRouter);
+apiRouter.use("/map", mapRouter);
+apiRouter.use("/paths", pathsRouter);

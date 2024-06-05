@@ -1,4 +1,6 @@
 import express from "express";
+import path from "path";
+import fs from "fs";
 
 export const assetsRouter = express.Router();
 
@@ -25,6 +27,13 @@ export const assetsRouter = express.Router();
  *     security:
  *       - Authorization: []
  */
-assetsRouter.get("/", 
-	
-);
+assetsRouter.get("/", (req, res) => {
+	const geojsonFilePath = path.resolve(__dirname, "../../../data/geojson/assets_aziendali.geojson");
+	fs.readFile(geojsonFilePath, "utf8", (err, data) => {
+		if (err) {
+			return res.status(500).json({error: `Unable to read GeoJSON ${geojsonFilePath}`});
+		}
+		const geojson = JSON.parse(data);
+		res.json(geojson);
+	});
+});

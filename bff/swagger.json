@@ -12,10 +12,6 @@
 		{
 			"url": "http://localhost:3000",
 			"description": "Blueiot fake API"
-		},
-		{
-			"url": "http://test12.com:3000",
-			"description": "Local server"
 		}
 	]
 }
