@@ -3,9 +3,20 @@ import swaggerJSDoc from "swagger-jsdoc";
 const swaggerDefinition = {
 	openapi: "3.0.3",
 	info: {
+		description:
+			"Qeusta è la documentazione del backend for frontend del progetto Infotel Asset Locator. Queste API sono state sviluppate per semplificare lo sviluppo dell'applicazione mobile rendendola indipendente da sistemi esterni.",
 		title: "Infotel AssetLocator BFF API Documentation",
-		version: "0.0.1",
+		version: "2.0.0",
+		termsOfService: "http://swagger.io/terms/",
+		contact: {email: "remigio.vildacci@gmail.com"},
+		license: {name: "Apache 2.0", url: "http://www.apache.org/licenses/LICENSE-2.0.html"},
 	},
+	servers: [
+		{
+			url: "http://localhost:3000",
+			description: "Blueiot fake API",
+		},
+	],
 	components: {
 		securitySchemes: {
 			Authorization: {

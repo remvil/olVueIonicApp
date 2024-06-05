@@ -5,9 +5,10 @@ import helmet from "helmet";
 import path from "path";
 import fs from "fs";
 import swaggerUi from "swagger-ui-express";
-import {apiRouter} from "./api/index"; // Senza estensione .ts
+import {apiRouter} from "./api/index";
 import {CORSHOSTS, ENVIRONMENT, SERVER_PORT} from "./envconfig";
 import {Logger, initLogger} from "./api/logger";
+import {swaggerSpec} from "./swagger";
 
 if (!SERVER_PORT || !ENVIRONMENT) process.exit(1);
 
@@ -50,7 +51,7 @@ app.get("/", (req, res) => {
 	res.send("Hello from the backend!");
 });
 
-app.use("/api-docs/", swaggerUi.serve, swaggerUi.setup(swaggerJson));
+app.use("/api-docs/", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api", apiRouter);
 
 // Avvia il server
