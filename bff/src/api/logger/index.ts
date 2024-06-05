@@ -1,6 +1,7 @@
 import {error, info} from "console";
 import {ENVIRONMENT, VERSION} from "../../envconfig";
 import {DevLogger} from "./dev";
+import {ProdLogger} from "./prod";
 
 export interface ILogger {
 	writeTrace(message: string, severityLevel: number, err?: string): void;
@@ -26,8 +27,11 @@ export const initLogger = () => {
 		case "dev":
 			Logger = new DevLogger();
 			break;
+		case "prod":
+			Logger = new ProdLogger();
+			break;
 	}
 
-	info({event: "Logger initialized"});
+	info({event: `Logger initialized on '${ENVIRONMENT}' environment`});
 	info({client: client});
 };
