@@ -7,7 +7,7 @@ import fs from "fs";
 import swaggerUi from "swagger-ui-express";
 import {apiRouter} from "./api/index";
 import {CORSHOSTS, ENVIRONMENT, SERVER_PORT} from "./envconfig";
-import {Logger, initLogger} from "./api/logger";
+import {Logger, initLogger} from "./helpers/logger";
 import {swaggerSpec} from "./swagger";
 
 if (!SERVER_PORT || !ENVIRONMENT) process.exit(1);

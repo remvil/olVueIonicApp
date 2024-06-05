@@ -8,6 +8,14 @@ export const apiRouter = express.Router();
 
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     HealthcheckResponse:
+ *        type: object
+ *        properties:
+ *          message:
+ *            type: string
+ *            example: Hey this is a example of the status
  * /api/healthcheck:
  *  get:
  *    summary: Returns a message regarding the health status of the server

@@ -1,4 +1,4 @@
-import {Logger} from "../api/logger";
+import {Logger} from "./logger";
 import {ErrorPayload, ErrorType} from "./../api/types";
 import {load} from "cheerio";
 
@@ -6,12 +6,6 @@ import {load} from "cheerio";
  * @swagger
  * components:
  *   schemas:
- *     HealthcheckResponse:
- *        type: object
- *        properties:
- *          message:
- *            type: string
- *            example: Hey this is a example of the status
  *     GenericError:
  *       type: object
  *       properties:
@@ -34,6 +28,7 @@ import {load} from "cheerio";
  *         code:
  *           type: string
  */
+// TODO completare i tipi di tutti gli errori
 
 export const formatError = (error: ErrorType, code: string = "001-Unknown", handledAt?: string): ErrorPayload => {
 	return error.response ? formatResponseData(error, code, handledAt) : formatInternalServerError(error, code, handledAt);
