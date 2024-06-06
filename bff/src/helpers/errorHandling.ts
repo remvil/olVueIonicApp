@@ -28,7 +28,6 @@ import {load} from "cheerio";
  *         code:
  *           type: string
  */
-// TODO completare i tipi di tutti gli errori
 
 export const formatError = (error: ErrorType, code: string = "001-Unknown", handledAt?: string): ErrorPayload => {
 	return error.response ? formatResponseData(error, code, handledAt) : formatInternalServerError(error, code, handledAt);
