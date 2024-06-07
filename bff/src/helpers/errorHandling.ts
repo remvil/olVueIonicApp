@@ -1,5 +1,5 @@
 import {Logger} from "./logger";
-import {ErrorPayload, ErrorType} from "./../api/types";
+import {ErrorPayload, ErrorType} from "../api/types";
 import {load} from "cheerio";
 
 /**
