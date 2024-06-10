@@ -61,6 +61,8 @@ assetsRouter.get("/", (req, res) => {
  *               $ref: '#/components/schemas/GenericError'
  *     tags:
  *       - Assets
+ *     security:
+ *       - Authorization: []
  */
 assetsRouter.get("/:id", (req, res) => {
 	const geojsonFilePath = path.resolve(__dirname, "../../../data/geojson/assets_aziendali.geojson");

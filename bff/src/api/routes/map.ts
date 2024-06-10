@@ -26,6 +26,8 @@ export const mapRouter = express.Router();
  *               $ref: '#/components/schemas/GenericError'
  *     tags:
  *       - Mappa
+ *     security:
+ *       - Authorization: []
  *
  *  @swagger
  * components:
