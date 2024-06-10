@@ -16,9 +16,9 @@ import {load} from "cheerio";
  *     GetAssetsError:
  *       type: object
  *       properties:
- *         message:
- *           type: string
  *         code:
+ *           type: string
+ *         message:
  *           type: string
  *     GetAssetError:
  *       type: object

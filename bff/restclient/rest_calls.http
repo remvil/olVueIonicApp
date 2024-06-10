@@ -1,0 +1,10 @@
+### Healthcheck api/healtcheck
+GET http://localhost:3000/api/healthcheck
+
+### Map - api/map/perimetro
+GET http://localhost:3000/api/map
+
+### Assets - api/assets
+GET http://localhost:3000/api/assets
+
+GET http://localhost:3000/api/assets/1

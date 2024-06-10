@@ -6,14 +6,21 @@ export const mapRouter = express.Router();
 
 /**
  * @swagger
- * /api/map/perimetro:
- *  get:
- *    summary: Restituisce il perimetro dell'edificio in formato geojson con una FeatureCollection
- *    responses:
- *      200:
- *        message: FeatureCollection
- *    tags:
- *      - map, planimetria, perimetro
+ *
+ *
+ * /api/map:
+ *   get:
+ *     summary: Restituisce il perimetro dell'edificio in formato geojson con una FeatureCollection
+ *     responses:
+ *       200:
+ *         description: Restituisce tutti gli elementi per renderizzare il perimetro della mappa
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/FeatureCollection'
+ *         
+ *     tags:
+ *       - Mappa
  *
  *  @swagger
  * components:
@@ -21,7 +28,7 @@ export const mapRouter = express.Router();
  *    $ref: '#/components/schemas/GenericError'
  *
  */
-mapRouter.get("/perimetro", (req, res) => {
+mapRouter.get("/", (req, res) => {
 	const geojsonFilePath = path.resolve(__dirname, "../../../data/geojson/perimetro_infotel.geojson");
 	fs.readFile(geojsonFilePath, "utf8", (err, data) => {
 		if (err) {
