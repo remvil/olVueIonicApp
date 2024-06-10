@@ -7,4 +7,5 @@ GET http://localhost:3000/api/map
 ### Assets - api/assets
 GET http://localhost:3000/api/assets
 
-GET http://localhost:3000/api/assets/1
+### Asset get a signle one - api/assets/id
+GET http://localhost:3000/api/assets/10

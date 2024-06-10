@@ -43,7 +43,14 @@
 						<!-- <ol-source-vector :format="geoJson" crossOrigin="anonymous" url="geojson/perimetro_infotel.geojson" /> -->
 						<ol-source-vector :format="geoJson" crossOrigin="anonymous"
 							:url="perimetroGeojsonData ? 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(perimetroGeojsonData)) : null" />
+					</ol-webgl-vector-layer>
 
+					<!-- Feature Pianta Infotel -->
+					<!-- // TODO integrare la chiamata -->
+					<ol-webgl-vector-layer :styles="webglLineStylePerimetro">
+						<ol-source-vector :format="geoJson" crossOrigin="anonymous" url="geojson/plan9.geojson" />
+						<ol-source-vector :format="geoJson" crossOrigin="anonymous"
+							:url="perimetroGeojsonData ? 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(perimetroGeojsonData)) : null" />
 					</ol-webgl-vector-layer>
 
 					<!-- <ol-rotate-control></ol-rotate-control> -->
@@ -88,7 +95,7 @@ import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue
 import type { ObjectEvent } from "ol/Object";
 import type { View } from "ol";
 import proj4 from "proj4";
-import { apiService } from '@/services/api'; // Importa il servizio API
+
 // import { GeoJSON } from "ol/format";
 
 
@@ -126,9 +133,8 @@ const perimetroGeojsonData = ref(null);
 onMounted(async () => {
 	try {
 		// Esempio di chiamata API per ottenere dati da una risorsa
-		perimetroGeojsonData.value = await apiService.getResource('geojsonPerimetro');
-		console.log(perimetroGeojsonData.value);
-		console.log('WEEEEEE')
+		// perimetroGeojsonData.value = await apiService.getResource('geojsonPerimetro');
+		console.log('perimetro', perimetroGeojsonData.value);
 	} catch (error) {
 		console.error('Errore durante la richiesta API:', error);
 	}

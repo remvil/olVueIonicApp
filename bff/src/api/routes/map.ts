@@ -18,7 +18,12 @@ export const mapRouter = express.Router();
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/FeatureCollection'
- *         
+ *       500:
+ *         description: Errore del server. Non riesce a trovare la risorsa richiesta
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/GenericError'
  *     tags:
  *       - Mappa
  *
