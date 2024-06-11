@@ -23,15 +23,17 @@ export const apiService = {
 	},
 
 	// Esempio di funzione per inviare dati a una risorsa
-	async postResource(resource, data) {
-		try {
-			const response = await api.post(`/${resource}`, data);
-			return response.data;
-		} catch (error) {
-			console.error("Errore durante la richiesta:", error);
-			throw error;
-		}
-	},
+	// async postResource(resource, data) {
+	// 	try {
+	// 		const response = await api.post(`/${resource}`, data);
+	// 		return response.data;
+	// 	} catch (error) {
+	// 		console.error("Errore durante la richiesta:", error);
+	// 		throw error;
+	// 	}
+	// },
+
+	
 
 	// Aggiungi qui altre funzioni per le chiamate API secondo necessità
 };

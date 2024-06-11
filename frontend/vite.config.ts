@@ -9,6 +9,7 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			"@": path.resolve(__dirname, "./src"),
+			"@vueuse/core": path.resolve(__dirname, "node_modules/@vueuse/core"),
 		},
 	},
 	test: {

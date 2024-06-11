@@ -76,7 +76,7 @@ assetsRouter.get("/:id", (req, res) => {
 		const foundFeature = feats.find((feature) => feature.properties.id === requiredId);
 
 		if (foundFeature) {
-			res.json(foundFeature);
+			res.status(200).json(foundFeature);
 		} else {
 			res.status(404).json({error: "Asset required not found"});
 		}

@@ -1,5 +1,4 @@
 <template>
-
 	<ion-page>
 		<ion-content :fullscreen="true">
 			<ion-header collapse="condense">
@@ -11,7 +10,7 @@
 			<!-- <ol-source-vector :url=geojsonUrl ref="sourceRef" /> -->
 			<ol-map class="map-container" style="height: 90vh" :loadTilesWhileAnimating="true"
 				:loadTilesWhileInteracting="true">
-				<ol-view ref="view" :center="center" :rotation="rotation" :zoom="zoom" :projection="projection" :minZoom="19"
+				<ol-view ref="view" :center="center" :rotation="rotation" :zoom="zoom" :projection="projection" :minZoom="0"
 					@change:center="centerChanged" @change:resolution="resolutionChanged" @change:rotation="rotationChanged" />
 
 				<ol-layer-group :opacity="1">
@@ -20,37 +19,28 @@
 						<ol-source-osm crossOrigin="anonymous" />
 					</ol-tile-layer>
 
-					<!-- Img Cutilia -->
-					<ol-image-layer id="xkcd">
-						<ol-source-image-static :url="imgUrlCutilia" :imageSize="sizeCutilia" :imageExtent="extentCutilia"
-							:projection="projectionImgCutilia"></ol-source-image-static>
-					</ol-image-layer>
-
 					<!-- Img Infotel -->
-					<ol-image-layer id="xkcd">
+					<!-- <ol-image-layer id="xkcd">
 						<ol-source-image-static :url="imgUrlInfotel" :imageSize="sizeInfotel" :imageExtent="extentInfotel"
 							:projection="projectionImgInfotel" :rotation="45"></ol-source-image-static>
-					</ol-image-layer>
+					</ol-image-layer> -->
 
 					<!-- Features percorso -->
-					<ol-webgl-vector-layer :styles="webglLineStyle">
+					<!-- <ol-webgl-vector-layer :styles="webglLineStyle">
 						<ol-source-vector :format="geoJson" crossOrigin="anonymous" url="geojson/percorso.geojson" />
-					</ol-webgl-vector-layer>
+					</ol-webgl-vector-layer> -->
 
 					<!-- Feature perimetro Infotel -->
-					<!-- // TODO integrare la chiamata -->
-					<ol-webgl-vector-layer :styles="webglLineStylePerimetro">
-						<!-- <ol-source-vector :format="geoJson" crossOrigin="anonymous" url="geojson/perimetro_infotel.geojson" /> -->
-						<ol-source-vector :format="geoJson" crossOrigin="anonymous"
-							:url="perimetroGeojsonData ? 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(perimetroGeojsonData)) : null" />
-					</ol-webgl-vector-layer>
+					<!-- <ol-webgl-vector-layer :styles="webglLineStylePerimetro"> -->
+					<!-- <ol-source-vector :format="geoJson" crossOrigin="anonymous" url="geojson/perimetro_infotel.geojson" /> -->
+					<!-- <ol-source-vector :format="geoJson" crossOrigin="anonymous"
+							:url="perimetroGeojsonData ? 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(perimetroGeojsonData)) : null" /> -->
+					<!-- </ol-webgl-vector-layer> -->
 
 					<!-- Feature Pianta Infotel -->
-					<!-- // TODO integrare la chiamata -->
 					<ol-webgl-vector-layer :styles="webglLineStylePerimetro">
-						<ol-source-vector :format="geoJson" crossOrigin="anonymous" url="geojson/plan9.geojson" />
-						<ol-source-vector :format="geoJson" crossOrigin="anonymous"
-							:url="perimetroGeojsonData ? 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(perimetroGeojsonData)) : null" />
+						<!-- <ol-source-vector :format="geoJson" crossOrigin="anonymous" url="geojson/plan.geojson" /> -->
+						<ol-source-vector :format="geoJson" crossOrigin="anonymous" :url="perimetroGeojsonUrl" />
 					</ol-webgl-vector-layer>
 
 					<!-- <ol-rotate-control></ol-rotate-control> -->
@@ -92,6 +82,7 @@
 <script setup lang="ts">
 import { ref, inject, reactive, onMounted } from "vue";
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue';
+import { fetchGeoJson } from '@/services/apiService';
 import type { ObjectEvent } from "ol/Object";
 import type { View } from "ol";
 import proj4 from "proj4";
@@ -118,45 +109,39 @@ const currentResolution = ref(0);
 // Lines
 const format = inject("ol-format");
 const geoJson = new format.GeoJSON();
-const webglLineStyle = {
-	"stroke-width": 3,
-	"stroke-color": "rgba(255,6,34,0.7)",
-};
+// const webglLineStyle = {
+// 	"stroke-width": 3,
+// 	"stroke-color": "rgba(255,6,34,0.7)",
+// };
 
 // Perimetro Infotel
 const webglLineStylePerimetro = {
 	"stroke-width": 3,
 	"stroke-color": "rgba(255,6,34,0.7)",
 }
-const perimetroGeojsonData = ref(null);
 // Effettua una chiamata API quando il componente viene montato
+// GeoJson data
+const perimetroGeojsonUrl = ref();
 onMounted(async () => {
 	try {
-		// Esempio di chiamata API per ottenere dati da una risorsa
-		// perimetroGeojsonData.value = await apiService.getResource('geojsonPerimetro');
-		console.log('perimetro', perimetroGeojsonData.value);
+		const data = await fetchGeoJson('map');
+		console.log('fetch:', data);
+		perimetroGeojsonUrl.value = `data:application/json;charset=utf-8,${encodeURIComponent(JSON.stringify(data))}`;
 	} catch (error) {
 		console.error('Errore durante la richiesta API:', error);
 	}
 });
 
 // Image
-const imgUrlCutilia = ref("imgs/cutilia-building.png");
-const imgUrlInfotel = ref("imgs/infotel-plan.png");
-const sizeCutilia = ref([100, 900]);
-const extentCutilia = ref([1392545.6062, 5142840.6205, 1392739.6845, 5142985.1342]);
-const sizeInfotel = ref([900, 900]);
-const extentInfotel = ref([1652918.5089, 4958912.2427, 1652970.9849, 4958964.7887])
-const projectionImgCutilia = reactive({
-	code: "xkcd-image",
-	units: "pixels",
-	extent: extentCutilia,
-});
-const projectionImgInfotel = reactive({
-	code: "xkcd-image",
-	units: "pixels",
-	extent: extentInfotel,
-});
+// const imgUrlInfotel = ref("imgs/infotel-plan.png");
+// const sizeInfotel = ref([900, 900]);
+// const extentInfotel = ref([1652918.5089, 4958912.2427, 1652970.9849, 4958964.7887])
+
+// const projectionImgInfotel = reactive({
+// 	code: "xkcd-image",
+// 	units: "pixels",
+// 	extent: extentInfotel,
+// });
 
 
 // Point - geolocalizzazione
@@ -235,7 +220,6 @@ ion-content {
 	}
 }
 
-
 .ol-map {
 	position: relative;
 	background: repeating-linear-gradient(45deg,
@@ -244,26 +228,4 @@ ion-content {
 			#d7d7d7 10px,
 			#d7d7d7 20px);
 }
-
-/* .ol-map-loading:after {
-	content: "";
-	box-sizing: border-box;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	width: 80px;
-	height: 80px;
-	margin-top: -40px;
-	margin-left: -40px;
-	border-radius: 50%;
-	border: 5px solid rgba(180, 180, 180, 0.6);
-	border-top-color: var(--vp-c-brand-1);
-	animation: spinner 0.6s linear infinite;
-}
-
-@keyframes spinner {
-	to {
-		transform: rotate(360deg);
-	}
-} */
 </style>
