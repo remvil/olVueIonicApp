@@ -9,7 +9,7 @@
 
 			<ol-map class="map-container" style="height: 90vh" :loadTilesWhileAnimating="true"
 				:loadTilesWhileInteracting="true">
-				<ol-view ref="view" :center="fakePosition" :rotation="rotation" :zoom="zoom" :minZoom="18"
+				<ol-view ref="view" :center="absoluteCenter" :rotation="rotation" :zoom="zoom" :minZoom="19"
 					:projection="projection" @change:center="centerChanged" @change:resolution="resolutionChanged"
 					@change:rotation="rotationChanged" />
 
@@ -34,8 +34,7 @@
 
 					<!-- <ol-rotate-control></ol-rotate-control> -->
 					<!-- Event handler Drag -->
-					<ol-interaction-pointer @down="log('⬇️ down', $event)" @up="log('⬆️ up', $event)"
-						@drag="log('🤚🏽 drag', $event)" @move="log('🚗 move', $event)" />
+					<!-- <ol-interaction-pointer @drag="centerChanged($event)" /> -->
 
 					<ol-interaction-link />
 
@@ -71,7 +70,7 @@
 import { ref, inject, onMounted } from "vue";
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue';
 import { fetchGeoJson } from '@/services/apiService';
-import type { Feature, MapBrowserEvent, View } from "ol";
+import type { Feature, View } from "ol";
 import { Geometry } from "ol/geom";
 import type { ObjectEvent } from "ol/Object";
 // import proj4 from "proj4";
@@ -82,6 +81,8 @@ const zoom = ref(20);
 const rotation = ref(0);
 const fakePosition = ref([1652955.865991945, 4958950.611020285]); // Fake position Infotel
 const currentCenter = ref(fakePosition.value);
+const absoluteCenterPosition = ref([1652940.865991945, 4958940.611020285]); // Fake position Infotel
+const absoluteCenter = ref(absoluteCenterPosition.value);
 const currentZoom = ref(zoom.value);
 const currentRotation = ref(rotation.value);
 const currentResolution = ref(0);
@@ -97,11 +98,7 @@ const geoJson = new format.GeoJSON();
 
 // Stili elementi GeoJSON
 const mapColor = ref('rgba(0, 255, 0, 0.5)'); // Green with 50% opacity
-const webglLineStylePlanimetria = {
-	"stroke-width": 1,
-	"stroke-color": "rgba(5,6,34,0.9)",
-	"fill-color": mapColor.value,
-}
+
 const webglAssetsStyle = {
 	"stroke-width": 10,
 	"stroke-color": "rgba(255,6,34,0.9)",
@@ -139,16 +136,30 @@ const geoLocChange = (event: ObjectEvent) => {
 	console.log("geoLocChange: ", event);
 };
 
-const log = (type: string, event: MapBrowserEvent<UIEvent>) => {
-	console.log(type, event);
-};
-
 function resolutionChanged(event: any) {
 	currentResolution.value = event.target.getResolution();
 	currentZoom.value = event.target.getZoom();
 }
 function centerChanged(event: any) {
 	currentCenter.value = event.target.getCenter();
+	// Limit movement over 50 meters from absolute Center
+	const maxDistance = 50; // meters
+	const newCenter = event.target.getCenter();
+	const distance = Math.sqrt(
+		Math.pow(newCenter[0] - fakePosition.value[0], 2) +
+		Math.pow(newCenter[1] - fakePosition.value[1], 2)
+	);
+
+	if (distance > maxDistance) {
+		currentCenter.value = absoluteCenter.value;
+		console.log('superato il limite');
+		console.log(absoluteCenter);
+		console.log(newCenter);
+		currentCenter.value = absoluteCenter.value
+
+	} else {
+		currentCenter.value = newCenter;
+	}
 }
 function rotationChanged(event: any) {
 	currentRotation.value = event.target.getRotation();
