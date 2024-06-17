@@ -9,33 +9,31 @@
 
 			<ol-map class="map-container" style="height: 90vh" :loadTilesWhileAnimating="true"
 				:loadTilesWhileInteracting="true">
-				<ol-view ref="view" :center="fakePosition" :rotation="rotation" :zoom="zoom" :minZoom="18"
-					:projection="projection" @change:center="centerChanged" @change:resolution="resolutionChanged"
+				<ol-view ref="view" :center="fakePosition" :rotation="rotation" :zoom="zoom" :projection="projection"
+					:minZoom="0" @change:center="centerChanged" @change:resolution="resolutionChanged"
 					@change:rotation="rotationChanged" />
 
 				<ol-layer-group :opacity="1">
 					<!-- Mappa Layer 0 -->
 					<ol-tile-layer>
-						<!-- <ol-source-osm crossOrigin="anonymous" /> -->
+						<ol-source-osm crossOrigin="anonymous" />
 					</ol-tile-layer>
+					<!-- Features percorso -->
+					<!-- <ol-webgl-vector-layer :styles="webglLineStyle">
+						<ol-source-vector :format="geoJson" crossOrigin="anonymous" url="geojson/percorso.geojson" />
+					</ol-webgl-vector-layer> -->
 
-					<ol-vector-layer>
-						<ol-source-vector :format="geoJson" crossOrigin="anonymous" :features="planimetriaFeatures" />
-						<ol-style>
-							<ol-style-fill :color="mapColor" />
-							<ol-style-stroke color="rgba(5, 6, 34, 0.9)" width="1" />
-						</ol-style>
-					</ol-vector-layer>
-
-					<!-- Features assets -->
-					<ol-webgl-vector-layer :styles="webglAssetsStyle">
-						<ol-source-vector :format="geoJson" crossOrigin="anonymous" :features="assetsFeatures" />
+					<ol-webgl-vector-layer :styles="webglLineStylePerimetro">
+						<!-- <ol-source-vector :format="geoJson" crossOrigin="anonymous" url="geojson/plan0.geojson" /> -->
+						<ol-source-vector :format="geoJson" crossOrigin="anonymous" :features="perimetroGeojsonFeatures" />
+						<!-- <ol-source-vector :format="geoJson" crossOrigin="anonymous"
+							:url="perimetroGeojsonData ? 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(perimetroGeojsonData)) : null" /> -->
 					</ol-webgl-vector-layer>
 
 					<!-- <ol-rotate-control></ol-rotate-control> -->
 					<!-- Event handler Drag -->
-					<ol-interaction-pointer @down="log('⬇️ down', $event)" @up="log('⬆️ up', $event)"
-						@drag="log('🤚🏽 drag', $event)" @move="log('🚗 move', $event)" />
+					<!-- <ol-interaction-pointer @down="log('⬇️ down', $event)" @up="log('⬆️ up', $event)"
+						@drag="log('🤚🏽 drag', $event)" @move="log('🚗 move', $event)" /> -->
 
 					<ol-interaction-link />
 
@@ -71,7 +69,7 @@
 import { ref, inject, onMounted } from "vue";
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue';
 import { fetchGeoJson } from '@/services/apiService';
-import type { Feature, MapBrowserEvent, View } from "ol";
+import type { Feature, View } from "ol";
 import { Geometry } from "ol/geom";
 import type { ObjectEvent } from "ol/Object";
 // import proj4 from "proj4";
@@ -81,67 +79,65 @@ const projection = ref("EPSG:3857"); //  EPSG:4326 or EPSG:3857
 const zoom = ref(20);
 const rotation = ref(0);
 const fakePosition = ref([1652955.865991945, 4958950.611020285]); // Fake position Infotel
+
 const currentCenter = ref(fakePosition.value);
 const currentZoom = ref(zoom.value);
 const currentRotation = ref(rotation.value);
 const currentResolution = ref(0);
 
 // GeoJson data
-const planimetriaFeatures = ref<Feature<Geometry>[]>([]);
-const assetsFeatures = ref<Feature<Geometry>[]>([]);
-// const pathFeatures = ref<Feature<Geometry>[]>([]);
+const perimetroGeojsonFeatures = ref<Feature<Geometry>[]>([]);
 
-// Setup properties geoJSON
+// Lines
 const format = inject("ol-format");
 const geoJson = new format.GeoJSON();
+// const webglLineStyle = {
+// 	"stroke-width": 3,
+// 	"stroke-color": "rgba(255,6,34,0.7)",
+// };
 
-// Stili elementi GeoJSON
-const mapColor = ref('rgba(0, 255, 0, 0.5)'); // Green with 50% opacity
-const webglLineStylePlanimetria = {
+// Perimetro Infotel
+const webglLineStylePerimetro = {
 	"stroke-width": 1,
 	"stroke-color": "rgba(5,6,34,0.9)",
-	"fill-color": mapColor.value,
 }
-const webglAssetsStyle = {
-	"stroke-width": 10,
-	"stroke-color": "rgba(255,6,34,0.9)",
-};
-// const webglPathStyle = {
-// 	"stroke-width": 3,
-// 	"stroke-color": "rgba(255,255,34,0.5)",
-// };
 // Effettua una chiamata API quando il componente viene montato
 onMounted(async () => {
 	try {
-		// Setup Planimetria
-		const planimetriaData = await fetchGeoJson('map');
-		const planFeatures = geoJson.readFeatures(planimetriaData, {
+		const data = await fetchGeoJson('map');
+		const features = geoJson.readFeatures(data, {
 			featureProjection: 'EPSG:3857'
 		});
-		planimetriaFeatures.value = planFeatures as Feature<Geometry>[];
-
-		// Setup Assets
-		const assetsData = await fetchGeoJson('assets');
-		const assFeatures = geoJson.readFeatures(assetsData, {
-			featureProjection: 'EPSG:3857'
-		});
-		assetsFeatures.value = assFeatures as Feature<Geometry>[];
-
+		perimetroGeojsonFeatures.value = features as Feature<Geometry>[];
 	} catch (error) {
 		console.error('Errore durante la richiesta API:', error);
 	}
 });
+
+// Image
+// const imgUrlInfotel = ref("imgs/infotel-plan.png");
+// const sizeInfotel = ref([900, 900]);
+// const extentInfotel = ref([1652918.5089, 4958912.2427, 1652970.9849, 4958964.7887])
+
+// const projectionImgInfotel = reactive({
+// 	code: "xkcd-image",
+// 	units: "pixels",
+// 	extent: extentInfotel,
+// });
+
 
 // Point - geolocalizzazione
 const here = ref("imgs/here.png");
 const view = ref<View>();
 const geoLocChange = (event: ObjectEvent) => {
 	console.log("geoLocChange: ", event);
+	// position.value = event.target.getPosition();
+	// // view.value?.setCenter(event.target?.getPosition());
+	// // Fake position Infotel
+	// view.value?.setCenter([1652960.865991945, 4958960.611020285]);
 };
 
-const log = (type: string, event: MapBrowserEvent<UIEvent>) => {
-	console.log(type, event);
-};
+// console.log(proj4("EPSG:4326", "EPSG:3857", [lon, lat]));
 
 function resolutionChanged(event: any) {
 	currentResolution.value = event.target.getResolution();
@@ -178,6 +174,8 @@ function rotationChanged(event: any) {
 
 <style scoped>
 ion-content {
+	/* --background: #D62828; */
+
 	ion-toolbar {
 		--background: #D62828;
 
