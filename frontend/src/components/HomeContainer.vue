@@ -1,7 +1,9 @@
 <template>
 	<div id="container">
 		<h1>Welcome to indoor navigation!</h1>
-		<strong>{{ name }}</strong>
+		<p class="ion-text-center ion-padding">
+			This app helps you navigate inside buildings and find rooms and objects.
+		</p>
 	</div>
 </template>
 
