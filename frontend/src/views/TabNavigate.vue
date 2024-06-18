@@ -3,7 +3,7 @@
 		<ion-content :fullscreen="true">
 			<ion-header collapse="condense">
 				<ion-toolbar>
-					<ion-title size="large"> Naviga </ion-title>
+					<ion-title size="large"> Floor 4 </ion-title>
 				</ion-toolbar>
 			</ion-header>
 
@@ -21,21 +21,23 @@
 					</ol-tile-layer> -->
 
 					<!-- BBox Layer -->
-					<!-- <ol-vector-layer>
-						<ol-source-vector :features="bbPlanFeatures" />
-						<ol-style>
-							<ol-style-stroke color="rgba(255, 6, 34, 0.9)" width="1" />
-						</ol-style>
-					</ol-vector-layer> -->
+					<ol-webgl-vector-layer :styles="[webglBBStyle]">
+						<ol-source-vector :format="geoJson" crossOrigin="anonymous" url="geojson/battipagliabbox.geojson" />
+					</ol-webgl-vector-layer>
+
 
 					<!-- Planimetry Layer -->
 					<ol-vector-layer>
 						<ol-source-vector :format="geoJson" crossOrigin="anonymous" :features="planimetriaFeatures" />
 						<ol-style>
-							<ol-style-fill color="rgba(5, 6, 34, 0.9)" />
-							<ol-style-stroke color="rgba(5, 6, 34, 0.9)" width="1" />
+							<ol-style-stroke color="rgba(5, 6, 34, 0.9)" width="2" />
 						</ol-style>
 					</ol-vector-layer>
+
+					<!-- Features path Layer-->
+					<ol-webgl-vector-layer :styles="[webglPathStyle]">
+						<ol-source-vector :format="geoJson" crossOrigin="anonymous" :features="pathFeatures" />
+					</ol-webgl-vector-layer>
 
 					<!-- Features assets Layer -->
 					<ol-vector-layer>
@@ -51,12 +53,6 @@
 						</ol-style>
 
 					</ol-vector-layer>
-
-
-					<!-- Features path Layer-->
-					<ol-webgl-vector-layer :styles="webglPathStyle">
-						<ol-source-vector :format="geoJson" crossOrigin="anonymous" :features="pathFeatures" />
-					</ol-webgl-vector-layer>
 
 					<!-- <ol-rotate-control></ol-rotate-control> -->
 					<!-- Event handler Drag -->
@@ -138,7 +134,6 @@ const changeCenter = () => {
 const planimetriaFeatures = ref<Feature<Geometry>[]>([]);
 const assetsFeatures = ref<Feature<Geometry>[]>([]);
 const pathFeatures = ref<Feature<Geometry>[]>([]);
-const bbPlanFeatures = ref<Feature<Geometry>[]>([]);
 
 // Setup properties geoJSON
 const format = inject("ol-format");
@@ -148,6 +143,11 @@ const geoJson = new format.GeoJSON();
 const webglPathStyle = {
 	"stroke-width": 3,
 	"stroke-color": "rgba(255,6,34,0.9)",
+};
+const webglBBStyle = {
+	"stroke-width": 2,
+	"stroke-color": "rgba(100,100,100,0.4)",
+	"fill-color": "rgba(255,255,255,0.7)",
 };
 
 // Makes some API call when component is mounted
