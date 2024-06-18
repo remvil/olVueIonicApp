@@ -266,4 +266,3 @@ apiRouter.get("/healthcheck", (_req: Request, res: Response) => res.json({messag
 apiRouter.use("/assets", assetsRouter);
 apiRouter.use("/map", mapRouter);
 apiRouter.use("/path", pathsRouter);
-// apiRouter.use("/paths", pathsRouter);
