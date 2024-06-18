@@ -2,7 +2,7 @@ import {createApp} from "vue";
 import App from "./App.vue";
 import router from "./router";
 
-import {IonicVue} from "@ionic/vue";
+import {IonIcon, IonicVue} from "@ionic/vue";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/vue/css/core.css";
@@ -38,9 +38,12 @@ import "vue3-openlayers/styles.css";
 
 import OpenLayersMap from "vue3-openlayers";
 
-const app = createApp(App).use(IonicVue).use(router);
+const app = createApp(App)
+	.use(IonicVue)
+	.use(router)
+	.use(OpenLayersMap /*, options */)
+	.component('ion-icon', IonIcon);
 
-app.use(OpenLayersMap /*, options */);
 
 router.isReady().then(() => {
 	app.mount("#app");

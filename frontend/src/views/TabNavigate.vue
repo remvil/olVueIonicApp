@@ -9,29 +9,53 @@
 
 			<ol-map class="map-container" style="height: 90vh" :loadTilesWhileAnimating="true"
 				:loadTilesWhileInteracting="true">
-				<ol-view ref="view" :center="absoluteCenter" :rotation="rotation" :zoom="zoom" :minZoom="18"
+				<ol-view ref="view" :center="absoluteCenter" :rotation="rotation" :zoom="zoom" :minZoom="1"
 					:projection="projection" @change:center="centerChanged" @change:resolution="resolutionChanged"
 					@change:rotation="rotationChanged" />
 				<button class="btn-default ol-zoom-out" type="button" @click="changeCenter()">
-					Center
+					<ion-icon aria-hidden="true" :icon="locate" />
 				</button>
 				<ol-layer-group :opacity="1">
-					<!-- Mappa Layer 0 -->
-					<ol-tile-layer>
-						<!-- <ol-source-osm crossOrigin="anonymous" /> -->
-					</ol-tile-layer>
+					<!-- <ol-tile-layer>
+						<ol-source-osm crossOrigin="anonymous" />
+					</ol-tile-layer> -->
 
+					<!-- BBox Layer -->
+					<!-- <ol-vector-layer>
+						<ol-source-vector :features="bbPlanFeatures" />
+						<ol-style>
+							<ol-style-stroke color="rgba(255, 6, 34, 0.9)" width="1" />
+						</ol-style>
+					</ol-vector-layer> -->
+
+					<!-- Planimetry Layer -->
 					<ol-vector-layer>
 						<ol-source-vector :format="geoJson" crossOrigin="anonymous" :features="planimetriaFeatures" />
 						<ol-style>
-							<ol-style-fill :color="mapColor" />
+							<ol-style-fill color="rgba(5, 6, 34, 0.9)" />
 							<ol-style-stroke color="rgba(5, 6, 34, 0.9)" width="1" />
 						</ol-style>
 					</ol-vector-layer>
 
-					<!-- Features assets -->
-					<ol-webgl-vector-layer :styles="webglAssetsStyle">
-						<ol-source-vector :format="geoJson" crossOrigin="anonymous" :features="assetsFeatures" />
+					<!-- Features assets Layer -->
+					<ol-vector-layer>
+						<ol-source-vector :format="geoJson" crossOrigin="anonymous" :features="assetsFeatures"
+							:projection="projection">
+						</ol-source-vector>
+
+						<ol-style>
+							<ol-style-circle :radius="8" color="green">
+								<ol-style-fill color="#00aaffff"></ol-style-fill>
+								<ol-style-stroke color="#0077ffff" width="4"></ol-style-stroke>
+							</ol-style-circle>
+						</ol-style>
+
+					</ol-vector-layer>
+
+
+					<!-- Features path Layer-->
+					<ol-webgl-vector-layer :styles="webglPathStyle">
+						<ol-source-vector :format="geoJson" crossOrigin="anonymous" :features="pathFeatures" />
 					</ol-webgl-vector-layer>
 
 					<!-- <ol-rotate-control></ol-rotate-control> -->
@@ -73,24 +97,32 @@
 import { ref, inject, onMounted } from "vue";
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue';
 import { fetchGeoJson } from '@/services/apiService';
-import type { Feature, View } from "ol";
-import { Geometry } from "ol/geom";
+import { Feature, View } from "ol";
+import { Geometry, Polygon } from "ol/geom";
 import type { ObjectEvent } from "ol/Object";
+import { locate } from 'ionicons/icons';
+// import { Vector } from "ol/source";
+// import VectorSource from "ol/source/Vector";
+// import VectorLayer from "ol/layer/Vector";
+// import { Fill, Stroke, Style } from "ol/style";
 // import proj4 from "proj4";
 
 // Map Init Settings
 const projection = ref("EPSG:3857"); //  EPSG:4326 or EPSG:3857
-const zoom = ref(20);
+const zoom = ref(22);
 const rotation = ref(0);
-const fakePosition = ref([1652955.865991945, 4958950.611020285]); // Fake position Infotel
+// const fakePosition = ref([1652955.865991945, 4958950.611020285]); // Fake position Infotel Salerno
+// const absoluteCenterPosition = ref([1652940.865991945, 4958940.611020285]); // Absolute position Infotel Salerno
+
+const fakePosition = ref([1666762.63257, 4956026.94507]); // Fake position Infotel Battipaglia
 const currentCenter = ref(fakePosition.value);
-const absoluteCenterPosition = ref([1652940.865991945, 4958940.611020285]); // Fake position Infotel
+const absoluteCenterPosition = ref([1666763.27053, 4956024.30346]); // Absolute position Infotel Battipaglia
 const absoluteCenter = ref(absoluteCenterPosition.value);
 const currentZoom = ref(zoom.value);
 const currentRotation = ref(rotation.value);
 const currentResolution = ref(0);
 
-// Point - geolocalizzazione
+// Location and geolocalitation settings
 const here = ref("imgs/here.png");
 const view = ref<View>();
 const geoLocChange = (event: ObjectEvent) => {
@@ -102,42 +134,82 @@ const changeCenter = () => {
 	view.value?.setCenter(absoluteCenter.value);
 }
 
-// GeoJson data
+// Features refs for rendering
 const planimetriaFeatures = ref<Feature<Geometry>[]>([]);
 const assetsFeatures = ref<Feature<Geometry>[]>([]);
-// const pathFeatures = ref<Feature<Geometry>[]>([]);
+const pathFeatures = ref<Feature<Geometry>[]>([]);
+const bbPlanFeatures = ref<Feature<Geometry>[]>([]);
 
 // Setup properties geoJSON
 const format = inject("ol-format");
 const geoJson = new format.GeoJSON();
 
-// Stili elementi GeoJSON
-const mapColor = ref('rgba(0, 255, 0, 0.5)'); // Green with 50% opacity
-
-const webglAssetsStyle = {
-	"stroke-width": 10,
+// Styles GeoJSON
+const webglPathStyle = {
+	"stroke-width": 3,
 	"stroke-color": "rgba(255,6,34,0.9)",
 };
-// const webglPathStyle = {
-// 	"stroke-width": 3,
-// 	"stroke-color": "rgba(255,255,34,0.5)",
-// };
-// Effettua una chiamata API quando il componente viene montato
+
+// Makes some API call when component is mounted
 onMounted(async () => {
 	try {
-		// Setup Planimetria
-		const planimetriaData = await fetchGeoJson('map');
+		// Setup Planimetry
+		// const planimetriaData = await fetchGeoJson('map/salerno');
+		const planimetriaData = await fetchGeoJson('map/battipaglia/plan4');
 		const planFeatures = geoJson.readFeatures(planimetriaData, {
 			featureProjection: 'EPSG:3857'
 		});
 		planimetriaFeatures.value = planFeatures as Feature<Geometry>[];
 
+		// BBox della planimetry
+		// const planVectorSource = new Vector({
+		// 	features: planFeatures
+		// });
+
+		// const bbPlanimetryCoords = planVectorSource.getExtent() as [];
+		// const boundingBoxGeometry = new Polygon([bbPlanimetryCoords]);
+		// const boundingBoxFeature = new Feature(boundingBoxGeometry);
+
+		// // Variabile reattiva per la bounding box
+		// const bbPlanFeatures = ref<Feature<Geometry>[]>([boundingBoxFeature]);
+
+		// // Creazione di una sorgente vettoriale per la bounding box
+		// const bbVectorSource = new VectorSource({
+		// 	features: bbPlanFeatures.value as Feature[],
+		// });
+
+		// // Creazione di un layer vettoriale per la bounding box
+		// const bbVectorLayer = new VectorLayer({
+		// 	source: bbVectorSource,
+		// 	style: new Style({
+		// 		fill: new Fill({
+		// 			color: 'rgba(255, 255, 255, 0.5)', // Sfondo bianco semi-trasparente
+		// 		}),
+		// 		stroke: new Stroke({
+		// 			color: '#ffcc33',
+		// 			width: 2,
+		// 		}),
+		// 	}),
+		// });
+
+		// // const bbPlanimetryFeature = new Feature({
+		// // 	geometry: new Polygon.fromExtent(bbPlanimetryExtent),
+		// // });
+
+
 		// Setup Assets
-		const assetsData = await fetchGeoJson('assets');
+		const assetsData = await fetchGeoJson('assets/battipaglia');
 		const assFeatures = geoJson.readFeatures(assetsData, {
 			featureProjection: 'EPSG:3857'
 		});
 		assetsFeatures.value = assFeatures as Feature<Geometry>[];
+
+		// Setup Path
+		const pathData = await fetchGeoJson('path/battipaglia/plan4');
+		const pathFeats = geoJson.readFeatures(pathData, {
+			featureProjection: 'EPSG:3857'
+		});
+		pathFeatures.value = pathFeats as Feature<Geometry>[];
 
 	} catch (error) {
 		console.error('Errore durante la richiesta API:', error);
@@ -151,6 +223,7 @@ function resolutionChanged(event: any) {
 	currentResolution.value = event.target.getResolution();
 	currentZoom.value = event.target.getZoom();
 }
+
 function centerChanged(event: any) {
 	currentCenter.value = event.target.getCenter();
 	// Limit movement over 50 meters from absolute Center
@@ -160,7 +233,6 @@ function centerChanged(event: any) {
 		Math.pow(newCenter[0] - fakePosition.value[0], 2) +
 		Math.pow(newCenter[1] - fakePosition.value[1], 2)
 	);
-	console.log(distance);
 
 	if (distance > maxDistance) {
 		event.target.setCenter(currentCenter.value);
@@ -224,9 +296,25 @@ ion-content {
 .ol-map {
 	position: relative;
 	background: repeating-linear-gradient(45deg,
-			#dde1ce,
-			#dde1ce 10px,
-			#d7d7d7 10px,
-			#d7d7d7 20px);
+			#fffafa,
+			#fffafa 10px,
+			#ffffff 10px,
+			#ffffff 20px);
+}
+
+.btn-default.ol-zoom-out {
+	position: absolute;
+	z-index: 999;
+	right: 10px;
+	top: 10px;
+	background: var(--ol-background-color);
+	border-radius: 3px;
+	border: 1px solid lightgray;
+	font-size: 1.5rem;
+	padding: 0.2rem;
+
+	ion-icon {
+		color: var(--ol-subtle-foreground-color)
+	}
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
 	<div id="container">
-		<h1>Ho ho!!!</h1>
+		<h1>Welcome to indoor navigation!</h1>
 		<strong>{{ name }}</strong>
 	</div>
 </template>
