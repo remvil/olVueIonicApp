@@ -1,11 +1,34 @@
 ### Healthcheck api/healtcheck
 GET http://localhost:3000/api/healthcheck
 
-### Map - api/map/perimetro
-GET http://localhost:3000/api/map
 
-### Assets - api/assets
-GET http://localhost:3000/api/assets
+######## MAP LAYOUTS ########## 
+
+### Map - api/map/battipaglia/plan4 - Layouts Flat 4 Battipaglia Offices
+GET http://localhost:3000/api/map/battipaglia/plan4
+
+### Map - api/map/salerno - Layout Generic Flat Salerno Offices
+GET http://localhost:3000/api/map/salerno
+
+
+
+######## PATHS ##########
+
+### Path - api/path/plan4 - Path Flat 4 Battipaglia Offices
+GET http://localhost:3000/api/path/battipaglia/plan4
+
+
+
+######## ASSETS ##########
+
+### Assets - api/assets/salerno - List All Salerno Generic Flat Assets
+GET http://localhost:3000/api/assets/salerno
 
 ### Asset get a signle one - api/assets/id
-GET http://localhost:3000/api/assets/10
+GET http://localhost:3000/api/assets/salerno/1
+### Asset get a signle one - api/assets/id
+GET http://localhost:3000/api/assets/salerno/10
+
+
+### Assets - api/assets/battipaglia - List All Battipaglia Flat 4 Assets
+GET http://localhost:3000/api/assets/battipaglia

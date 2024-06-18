@@ -9,10 +9,12 @@
 
 			<ol-map class="map-container" style="height: 90vh" :loadTilesWhileAnimating="true"
 				:loadTilesWhileInteracting="true">
-				<ol-view ref="view" :center="absoluteCenter" :rotation="rotation" :zoom="zoom" :minZoom="19"
+				<ol-view ref="view" :center="absoluteCenter" :rotation="rotation" :zoom="zoom" :minZoom="18"
 					:projection="projection" @change:center="centerChanged" @change:resolution="resolutionChanged"
 					@change:rotation="rotationChanged" />
-
+				<button class="btn-default ol-zoom-out" type="button" @click="changeCenter()">
+					Center
+				</button>
 				<ol-layer-group :opacity="1">
 					<!-- Mappa Layer 0 -->
 					<ol-tile-layer>
@@ -34,7 +36,8 @@
 
 					<!-- <ol-rotate-control></ol-rotate-control> -->
 					<!-- Event handler Drag -->
-					<!-- <ol-interaction-pointer @drag="centerChanged($event)" /> -->
+					<!-- <ol-interaction-pointer @down="log('⬇️ down', $event)" @up="log('⬆️ up', $event)"
+						@drag="log('🤚🏽 drag', $event)" @move="log('🚗 move', $event)" /> -->
 
 					<ol-interaction-link />
 
@@ -87,6 +90,18 @@ const currentZoom = ref(zoom.value);
 const currentRotation = ref(rotation.value);
 const currentResolution = ref(0);
 
+// Point - geolocalizzazione
+const here = ref("imgs/here.png");
+const view = ref<View>();
+const geoLocChange = (event: ObjectEvent) => {
+	console.log("geoLocChange: ", event);
+};
+
+
+const changeCenter = () => {
+	view.value?.setCenter(absoluteCenter.value);
+}
+
 // GeoJson data
 const planimetriaFeatures = ref<Feature<Geometry>[]>([]);
 const assetsFeatures = ref<Feature<Geometry>[]>([]);
@@ -128,13 +143,9 @@ onMounted(async () => {
 		console.error('Errore durante la richiesta API:', error);
 	}
 });
-
-// Point - geolocalizzazione
-const here = ref("imgs/here.png");
-const view = ref<View>();
-const geoLocChange = (event: ObjectEvent) => {
-	console.log("geoLocChange: ", event);
-};
+// const log = (type: string, event: MapBrowserEvent<UIEvent>) => {
+// 	console.log(type, event);
+// };
 
 function resolutionChanged(event: any) {
 	currentResolution.value = event.target.getResolution();
@@ -149,16 +160,12 @@ function centerChanged(event: any) {
 		Math.pow(newCenter[0] - fakePosition.value[0], 2) +
 		Math.pow(newCenter[1] - fakePosition.value[1], 2)
 	);
+	console.log(distance);
 
 	if (distance > maxDistance) {
-		currentCenter.value = absoluteCenter.value;
-		console.log('superato il limite');
-		console.log(absoluteCenter);
-		console.log(newCenter);
-		currentCenter.value = absoluteCenter.value
-
+		event.target.setCenter(currentCenter.value);
 	} else {
-		currentCenter.value = newCenter;
+		currentCenter.value = absoluteCenter.value;
 	}
 }
 function rotationChanged(event: any) {

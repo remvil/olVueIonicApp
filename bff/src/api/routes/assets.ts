@@ -7,7 +7,7 @@ export const assetsRouter = express.Router();
 
 /**
  * @swagger
- * /api/assets:
+ * /api/assets/salerno:
  *   get:
  *     summary: Restituisce la lista di tutti gli assets registrati.
  *     responses:
@@ -28,8 +28,8 @@ export const assetsRouter = express.Router();
  *     security:
  *       - Authorization: []
  */
-assetsRouter.get("/", (req, res) => {
-	const geojsonFilePath = path.resolve(__dirname, "../../../data/geojson/assets_aziendali.geojson");
+assetsRouter.get("/salerno", (req, res) => {
+	const geojsonFilePath = path.resolve(__dirname, "../../../data/geojson/salerno/assets_aziendali.geojson");
 	fs.readFile(geojsonFilePath, "utf8", (err, data) => {
 		if (err) {
 			return res.status(500).json({error: `Unable to read GeoJSON ${geojsonFilePath}`});
@@ -41,7 +41,7 @@ assetsRouter.get("/", (req, res) => {
 
 /**
  * @swagger
- * /api/assets/{id}:
+ * /api/assets/salerno/{id}:
  *   get:
  *     summary: Restituisce l'asset con l'id passato per parametro.
  *     responses:
@@ -64,8 +64,8 @@ assetsRouter.get("/", (req, res) => {
  *     security:
  *       - Authorization: []
  */
-assetsRouter.get("/:id", (req, res) => {
-	const geojsonFilePath = path.resolve(__dirname, "../../../data/geojson/assets_aziendali.geojson");
+assetsRouter.get("/salerno/:id", (req, res) => {
+	const geojsonFilePath = path.resolve(__dirname, "../../../data/geojson/salerno/assets_aziendali.geojson");
 	fs.readFile(geojsonFilePath, "utf8", (err, data) => {
 		if (err) {
 			return res.status(500).json({error: `Unable to read GeoJSON ${geojsonFilePath}`});
@@ -80,5 +80,40 @@ assetsRouter.get("/:id", (req, res) => {
 		} else {
 			res.status(404).json({error: "Asset required not found"});
 		}
+	});
+});
+
+
+/**
+ * @swagger
+ * /api/assets/battipaglia:
+ *   get:
+ *     summary: Restituisce la lista di tutti gli assets registrati negli uffici di Battipaglia.
+ *     responses:
+ *       200:
+ *         description: Restituisce gli assets presenti negli uffici di battipaglia.
+ *         content:
+ *           application/json:
+ *             schema:
+ *              $ref: '#/components/schemas/FeatureCollection'
+ *       500:
+ *         description: Errore del server. Non riesce a trovare la risorsa richiesta
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/GetAssetsError'
+ *     tags:
+ *       - Assets
+ *     security:
+ *       - Authorization: []
+ */
+assetsRouter.get("/battipaglia", (req, res) => {
+	const geojsonFilePath = path.resolve(__dirname, "../../../data/geojson/battipaglia/infotelPlan4_assets.geojson");
+	fs.readFile(geojsonFilePath, "utf8", (err, data) => {
+		if (err) {
+			return res.status(500).json({error: `Unable to read GeoJSON ${geojsonFilePath}`});
+		}
+		const geojson = JSON.parse(data);
+		res.json(geojson);
 	});
 });
