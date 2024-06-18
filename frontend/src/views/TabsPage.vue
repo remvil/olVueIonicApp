@@ -10,12 +10,12 @@
 
 				<ion-tab-button tab="navigate" href="/tabs/navigate">
 					<ion-icon aria-hidden="true" :icon="navigate" />
-					<ion-label>Naviga</ion-label>
+					<ion-label>Map</ion-label>
 				</ion-tab-button>
 
 				<ion-tab-button tab="search" href="/tabs/search">
-					<ion-icon :icon="search" />
-					<ion-label>Search</ion-label>
+					<ion-icon :icon="list" />
+					<ion-label>Assets</ion-label>
 				</ion-tab-button>
 			</ion-tab-bar>
 		</ion-tabs>
@@ -24,5 +24,5 @@
 
 <script setup lang="ts">
 import { IonTabBar, IonTabButton, IonTabs, IonLabel, IonIcon, IonPage, IonRouterOutlet } from '@ionic/vue';
-import { home, search, navigate } from 'ionicons/icons';
+import { home, search, navigate, list } from 'ionicons/icons';
 </script>

@@ -249,6 +249,7 @@ ion-content {
 		ion-title {
 			place-content: center;
 			font-size: 1.4rem;
+			padding-bottom: 6px;
 		}
 
 		--toolbar-content {
@@ -272,9 +273,9 @@ ion-content {
 	position: relative;
 	background: repeating-linear-gradient(45deg,
 			#fffafa,
-			#fffafa 10px,
-			#ffffff 10px,
-			#ffffff 20px);
+			#fffafa 6px,
+			#ffffff 6px,
+			#ffffff 12px);
 }
 
 .btn-map {
