@@ -7,7 +7,7 @@
 		</ion-header>
 
 		<ion-content class="ion-padding">
-			<ion-searchbar placeholder="Search an asset..." debounce="500" v-model="searchTerm"></ion-searchbar>
+			<ion-searchbar placeholder="Search an asset..." :debounce="500" v-model="searchTerm"></ion-searchbar>
 			<ion-list lines="full">
 				<ion-item v-for="asset in filteredAssets" :key="asset.id" @click="doAction(asset)">
 					<ion-icon size="small" :icon="pricetag" slot="start"></ion-icon>
@@ -51,7 +51,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonIcon, IonLabel, IonButton, IonSearchbar, IonModal, IonButtons } from '@ionic/vue';
-import { chevronForward, pricetag, close, navigateCircle, warningOutline } from 'ionicons/icons';
+import { chevronForward, pricetag, close, navigateCircle } from 'ionicons/icons';
 import router from '@/router';
 
 interface HospitalAsset {

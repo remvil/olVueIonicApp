@@ -38,12 +38,12 @@
 					</ol-vector-layer>
 
 					<!-- Features path Layer-->
-					<ol-vector-layer>
+					<!-- <ol-vector-layer>
 						<ol-source-vector :format="geoJson" crossOrigin="anonymous" :features="pathFeatures" />
 						<ol-style>
 							<ol-style-stroke color="rgba(255,6,34,0.9)" width="2" :lineDash="[2, 5]" />
 						</ol-style>
-					</ol-vector-layer>
+					</ol-vector-layer> -->
 
 					<!-- Features assets Layer -->
 					<ol-vector-layer>
@@ -56,7 +56,6 @@
 								<ol-style-stroke color="#0077ffff" width="4"></ol-style-stroke>
 							</ol-style-circle>
 						</ol-style>
-
 					</ol-vector-layer>
 
 					<!-- <ol-rotate-control></ol-rotate-control> -->
