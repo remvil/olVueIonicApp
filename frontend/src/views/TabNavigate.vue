@@ -9,7 +9,7 @@
 
 			<ol-map class="map-container" style="height: 90vh" :loadTilesWhileAnimating="true"
 				:loadTilesWhileInteracting="true">
-				<ol-view ref="view" :center="absoluteCenter" :rotation="rotation" :zoom="zoom" :minZoom="1"
+				<ol-view ref="view" :center="absoluteCenter" :rotation="rotation" :zoom="zoom" :minZoom="20"
 					:projection="projection" @change:center="centerChanged" @change:resolution="resolutionChanged"
 					@change:rotation="rotationChanged" />
 				<button class="btn-map btn-locate" type="button" @click="changeCenter()">
@@ -38,12 +38,12 @@
 					</ol-vector-layer>
 
 					<!-- Features path Layer-->
-					<!-- <ol-vector-layer>
+					<ol-vector-layer>
 						<ol-source-vector :format="geoJson" crossOrigin="anonymous" :features="pathFeatures" />
 						<ol-style>
 							<ol-style-stroke color="rgba(255,6,34,0.9)" width="2" :lineDash="[2, 5]" />
 						</ol-style>
-					</ol-vector-layer> -->
+					</ol-vector-layer>
 
 					<!-- Features assets Layer -->
 					<ol-vector-layer>
@@ -95,7 +95,7 @@
 
 <script setup lang="ts">
 import { ref, inject, onMounted } from "vue";
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonActionSheet } from '@ionic/vue';
 import { fetchGeoJson } from '@/services/apiService';
 import { Feature, View } from "ol";
 import { Geometry } from "ol/geom";
@@ -148,24 +148,24 @@ const webglBBStyle = {
 // Makes some API call when component is mounted
 onMounted(async () => {
 	try {
-		// Setup Planimetry
-		// const planimetriaData = await fetchGeoJson('map/salerno');
-		const planimetriaData = await fetchGeoJson('map/battipaglia/plan4');
-		const planFeatures = geoJson.readFeatures(planimetriaData, {
+		// Setup Planimetry geojson
+		// const planimetriaGeoJSONData = await fetchGeoJson('map/salerno');
+		const planimetriaGeoJSONData = await fetchGeoJson('map/planimetry/battipaglia/4');
+		const planFeatures = geoJson.readFeatures(planimetriaGeoJSONData, {
 			featureProjection: 'EPSG:3857'
 		});
 		planimetriaFeatures.value = planFeatures as Feature<Geometry>[];
 
-		// Setup Assets
-		const assetsData = await fetchGeoJson('assets/battipaglia');
-		const assFeatures = geoJson.readFeatures(assetsData, {
+		// Setup Assets geojson
+		const assetsGeoJSONData = await fetchGeoJson('map/assets/battipaglia');
+		const assFeatures = geoJson.readFeatures(assetsGeoJSONData, {
 			featureProjection: 'EPSG:3857'
 		});
 		assetsFeatures.value = assFeatures as Feature<Geometry>[];
 
-		// Setup Path
-		const pathData = await fetchGeoJson('path/battipaglia/plan4');
-		const pathFeats = geoJson.readFeatures(pathData, {
+		// Setup Path geojson
+		const pathGeoJSONData = await fetchGeoJson('path/battipaglia/4');
+		const pathFeats = geoJson.readFeatures(pathGeoJSONData, {
 			featureProjection: 'EPSG:3857'
 		});
 		pathFeatures.value = pathFeats as Feature<Geometry>[];
@@ -214,7 +214,7 @@ const actionSheetButtons = [
 		text: 'Floor 2',
 		role: 'destructive',
 		data: {
-			action: 'cancel',
+			act: 'cancel',
 		},
 	},
 	{

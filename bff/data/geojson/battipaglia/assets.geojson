@@ -1,0 +1,57 @@
+{
+	"type": "FeatureCollection",
+	"features": [
+		{
+			"type": "Feature",
+			"properties": {
+				"name": "Tag1 Ingresso",
+				"description ": "tag presente nell'ingresso degli uffici",
+				"flat": 4
+			},
+			"geometry": {
+				"coordinates": [14.972727877530161, 40.61714363223126],
+				"type": "Point"
+			},
+			"id": 754
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"name": "Tag2 ingegnere",
+				"description": "tag presente nello studio dell'ingegnere",
+				"flat": 4
+			},
+			"geometry": {
+				"coordinates": [14.972794748927441, 40.61718123259803],
+				"type": "Point"
+			},
+			"id": 755
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"name": "Tag3 sala riunioni",
+				"description": "Tag posizionato nella sala riunioni",
+				"flat": 4
+			},
+			"geometry": {
+				"coordinates": [14.972825707906651, 40.61712483203996],
+				"type": "Point"
+			},
+			"id": 756
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"name": "Tag4 stanzino",
+				"description": "tag di prova posizionato nello stanzino",
+				"flat": 4
+			},
+			"geometry": {
+				"coordinates": [14.972861207537079, 40.61715021229716],
+				"type": "Point"
+			},
+			"id": 757
+		}
+	]
+}

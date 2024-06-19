@@ -9,6 +9,26 @@ export const apiRouter = express.Router();
  * @swagger
  * components:
  *   schemas:
+ *     HospitalAsset:
+ *       description: >
+ *         A hospital asset is any physical item or resource within a healthcare
+ *         facility that supports its operations, enhances patient care, or contributes
+ *         to the infrastructure of the hospital. Hospital assets are critical for ensuring
+ *         the efficient and effective delivery of healthcare services.
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: number
+ *         tagId:
+ *           type: string
+ *         batteryLevel:
+ *           type: number
+ *         name:
+ *           type: string
+ *         description:
+ *           type: string
+ *         floor:
+ *           type: number
  *     GeoJsonObject:
  *       description: >
  *         GeoJSon object

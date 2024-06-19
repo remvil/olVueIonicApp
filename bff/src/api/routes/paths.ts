@@ -8,9 +8,22 @@ export const pathsRouter = express.Router();
  * @swagger
  *
  *
- * /api/map/plan4:
+ * /api/path:
  *   get:
  *     summary: Restituisce tutti i possibili percorsi per navigare all'interno dell'edificio
+ *     parameters:
+ *       - in: path
+ *         name: location
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Il nome della posizione di cui si vuole recuperare i possibili cammini [salerno o battipaglia]
+ *       - in: path
+ *         name: flatNumber
+ *         required: false
+ *         schema:
+ *           type: number
+ *         description: Il numero del piano
  *     responses:
  *       200:
  *         description: Restituisce la Feature Collection contenente tutti i possibili segmenti percorribili
@@ -25,7 +38,7 @@ export const pathsRouter = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/GenericError'
  *     tags:
- *       - Mappa
+ *       - Path
  *     security:
  *       - Authorization: []
  *
@@ -35,8 +48,18 @@ export const pathsRouter = express.Router();
  *    $ref: '#/components/schemas/GenericError'
  *
  */
-pathsRouter.get("/battipaglia/plan4", (req, res) => {
-	const geojsonFilePath = path.resolve(__dirname, "../../../data/geojson/battipaglia/infotelPlan4_path.geojson");
+pathsRouter.get("/:location/:floor", (req, res) => {
+	const requiredLocation = req.params.location.toLowerCase();
+	if (requiredLocation !== "salerno" && requiredLocation !== "battipaglia")
+		return res.status(500).json({error: `Location '${requiredLocation}' is not served for now`});
+	const requiredFloor = req.params.floor ?? 0;
+	if (+requiredFloor > 4) {
+		return res.status(500).json({error: `Unable to find floor number ${requiredFloor}`});
+	}
+	const geojsonFilePath = !requiredLocation
+		? path.resolve(__dirname, `../../../data/geojson/battipaglia/plan4_paths.geojson`)
+		: path.resolve(__dirname, `../../../data/geojson/${requiredLocation}/plan4_paths.geojson`);
+
 	fs.readFile(geojsonFilePath, "utf8", (err, data) => {
 		if (err) {
 			return res.status(500).json({error: `Unable to read GeoJSON ${geojsonFilePath}`});

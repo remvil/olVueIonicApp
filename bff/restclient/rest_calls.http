@@ -1,34 +1,52 @@
+####################################
+######## TEST API INTERNE ##########
+####################################
+
 ### Healthcheck api/healtcheck
 GET http://localhost:3000/api/healthcheck
 
 
 ######## MAP LAYOUTS ########## 
 
-### Map - api/map/battipaglia/plan4 - Layouts Flat 4 Battipaglia Offices
-GET http://localhost:3000/api/map/battipaglia/plan4
+### Map - api/map/planimetry/battipaglia/ - Layouts Flat 1 Battipaglia Offices
+GET http://localhost:3000/api/map/planimetry/Battipaglia/4
 
-### Map - api/map/salerno - Layout Generic Flat Salerno Offices
-GET http://localhost:3000/api/map/salerno
+### Map - api/map/planimetry/salerno - Layout Generic Flat Salerno Offices
+GET http://localhost:3000/api/map/planimetry/salerno
+
+### Map Assets - api/map/assets/battipaglia
+GET http://localhost:3000/api/map/assets/battipaglia
+
+### Map Assets - api/map/assets/battipaglia/1
+GET http://localhost:3000/api/map/assets/battipaglia/1
 
 
 
 ######## PATHS ##########
 
 ### Path - api/path/plan4 - Path Flat 4 Battipaglia Offices
-GET http://localhost:3000/api/path/battipaglia/plan4
+GET http://localhost:3000/api/path/battipaglia/4
 
 
 
 ######## ASSETS ##########
 
 ### Assets - api/assets/salerno - List All Salerno Generic Flat Assets
-GET http://localhost:3000/api/assets/salerno
-
-### Asset get a signle one - api/assets/id
-GET http://localhost:3000/api/assets/salerno/1
-### Asset get a signle one - api/assets/id
-GET http://localhost:3000/api/assets/salerno/10
+GET http://localhost:3000/api/assets
 
 
-### Assets - api/assets/battipaglia - List All Battipaglia Flat 4 Assets
-GET http://localhost:3000/api/assets/battipaglia
+
+
+
+
+####################################
+######## TEST API ESTERNE ##########
+####################################
+
+POST http://185.169.239.178:8180/localsenseadmin/login HTTP/1.1
+content-type: application/json
+
+{
+    "username": "admin",
+    "password": "3394296ad97b4e2073c3934254526136"
+}
