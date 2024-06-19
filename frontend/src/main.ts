@@ -27,9 +27,9 @@ import "@ionic/vue/css/display.css";
  * https://ionicframework.com/docs/theming/dark-mode
  */
 
-/* @import '@ionic/vue/css/palettes/dark.always.css'; */
+// import "@ionic/vue/css/palettes/dark.always.css";
 /* @import '@ionic/vue/css/palettes/dark.class.css'; */
-import "@ionic/vue/css/palettes/dark.system.css";
+// import "@ionic/vue/css/palettes/dark.system.css";
 
 /* Theme variables */
 import "./theme/variables.css";
@@ -38,12 +38,7 @@ import "vue3-openlayers/styles.css";
 
 import OpenLayersMap from "vue3-openlayers";
 
-const app = createApp(App)
-	.use(IonicVue)
-	.use(router)
-	.use(OpenLayersMap /*, options */)
-	.component('ion-icon', IonIcon);
-
+const app = createApp(App).use(IonicVue).use(router).use(OpenLayersMap /*, options */).component("ion-icon", IonIcon);
 
 router.isReady().then(() => {
 	app.mount("#app");

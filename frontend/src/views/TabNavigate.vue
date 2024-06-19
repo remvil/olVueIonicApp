@@ -1,9 +1,9 @@
 <template>
 	<ion-page>
 		<ion-content :fullscreen="true">
-			<ion-header collapse="condense">
+			<ion-header>
 				<ion-toolbar>
-					<ion-title size="small"> Floor 4 </ion-title>
+					<ion-title size="large"> Floor 4 </ion-title>
 				</ion-toolbar>
 			</ion-header>
 
@@ -84,12 +84,12 @@
 				</ol-layer-group>
 			</ol-map>
 			<ion-action-sheet trigger="open-action-sheet" header="Actions" :buttons="actionSheetButtons"></ion-action-sheet>
-			<ul>
+			<!-- <ul>
 				<li>center : {{ currentCenter }}</li>
 				<li>resolution : {{ currentResolution }}</li>
 				<li>zoom : {{ currentZoom }}</li>
 				<li>rotation : {{ currentRotation }}</li>
-			</ul>
+			</ul> -->
 		</ion-content>
 	</ion-page>
 </template>
@@ -245,12 +245,6 @@ ion-content {
 	ion-toolbar {
 		--background: #FF5555;
 		--color: #283044;
-
-		ion-title {
-			place-content: center;
-			font-size: 1.4rem;
-			padding-bottom: 6px;
-		}
 
 		--toolbar-content {
 			--background: grey;
