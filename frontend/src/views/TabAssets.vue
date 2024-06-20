@@ -40,7 +40,8 @@
 					</ion-content>
 					<ion-footer>
 						<ion-toolbar>
-							<ion-button expand="block" @click="navigateToPageMap" color="warning">
+							<ion-button v-if="selectedAsset" expand="block"
+								@click="navigateToPageMap(selectedAsset.lat || 0, selectedAsset.lon || 0)" color="warning">
 								<ion-icon :icon="navigateCircle" size="large" color="dark" />
 							</ion-button>
 						</ion-toolbar>
@@ -55,9 +56,9 @@
 import { ref, computed, onMounted } from 'vue';
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonIcon, IonLabel, IonButton, IonSearchbar, IonModal, IonButtons, IonFooter } from '@ionic/vue';
 import { chevronForward, pricetag, close, navigateCircle, batteryHalf } from 'ionicons/icons';
-import router from '@/router';
 import { fetchAPI } from '@/services/apiService';
 import { HospitalAsset } from '@/models/hospitalAssets';
+import proj4 from "proj4";
 
 const searchTerm = ref('');
 const hospitalAssets = ref<HospitalAsset[]>([]);
@@ -81,11 +82,16 @@ function closeModal() {
 	selectedAsset.value = null;
 }
 
-function navigateToPageMap() {
+async function navigateToPageMap(lat: number, lon: number) {
 	closeModal();
-	router.push('/tabs/navigate');
+	setTimeout(() => {
+		const projectionEPSG3857 = proj4("EPSG:4326", "EPSG:3857", [lon, lat]);
+		const lonEPSG3857 = projectionEPSG3857[0];
+		const latEPSG3857 = projectionEPSG3857[1];
+		const url = `/tabs/navigate?x=${lonEPSG3857}&y=${latEPSG3857}&z=22&r=0&l=1111`;
+		window.location.href = url; // Force full page reload
+	}, 200); // Adjust the timeout as needed
 }
-
 onMounted(async () => {
 	try {
 		// Requesting Assets to API Service
