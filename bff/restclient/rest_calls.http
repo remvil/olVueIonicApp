@@ -50,3 +50,12 @@ content-type: application/json
     "username": "admin",
     "password": "3394296ad97b4e2073c3934254526136"
 }
+
+### Get Tag
+
+GET http://185.169.239.178:8180/localsenseadmin/tag/getAllTagUpgrade HTTP/1.1
+content-type: application/json
+
+{
+    "username": "admin",
+}

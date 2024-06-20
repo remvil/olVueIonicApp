@@ -3,7 +3,8 @@
 		<ion-content :fullscreen="true">
 			<ion-header>
 				<ion-toolbar>
-					<ion-title size="large"> Floor 4 </ion-title>
+					<ion-title size="large"><ion-icon aria-hidden="true" :icon="map" />&nbsp;&nbsp;&nbsp; Floor 4
+					</ion-title>
 				</ion-toolbar>
 			</ion-header>
 
@@ -16,7 +17,7 @@
 					<ion-icon aria-hidden="true" :icon="locate" />
 				</button>
 				<button class="btn-map btn-layers" id="open-action-sheet">
-					<ion-icon aria-hidden=" true" :icon="layers" />
+					<ion-icon aria-hidden="true" :icon="layers" />
 				</button>
 				<ol-layer-group :opacity="1">
 					<!-- <ol-tile-layer>
@@ -38,12 +39,12 @@
 					</ol-vector-layer>
 
 					<!-- Features path Layer-->
-					<ol-vector-layer>
+					<!-- <ol-vector-layer>
 						<ol-source-vector :format="geoJson" crossOrigin="anonymous" :features="pathFeatures" />
 						<ol-style>
 							<ol-style-stroke color="rgba(255,6,34,0.9)" width="2" :lineDash="[2, 5]" />
 						</ol-style>
-					</ol-vector-layer>
+					</ol-vector-layer> -->
 
 					<!-- Features assets Layer -->
 					<ol-vector-layer>
@@ -51,17 +52,11 @@
 							:projection="projection">
 						</ol-source-vector>
 						<ol-style>
-							<ol-style-circle :radius="8" color="green">
-								<ol-style-fill color="#00aaffff"></ol-style-fill>
-								<ol-style-stroke color="#0077ffff" width="4"></ol-style-stroke>
-							</ol-style-circle>
+							<ol-style-icon :src="here" :scale="0.06" :stroke="2" class="blink"></ol-style-icon>
 						</ol-style>
 					</ol-vector-layer>
 
 					<!-- <ol-rotate-control></ol-rotate-control> -->
-					<!-- Event handler Drag -->
-					<!-- <ol-interaction-pointer @down="log('⬇️ down', $event)" @up="log('⬆️ up', $event)"
-						@drag="log('🤚🏽 drag', $event)" @move="log('🚗 move', $event)" /> -->
 
 					<ol-interaction-link />
 
@@ -73,7 +68,10 @@
 									<ol-feature ref="positionFeature">
 										<ol-geom-point :coordinates="fakePosition"></ol-geom-point>
 										<ol-style>
-											<ol-style-icon :src="here" :scale="0.1"></ol-style-icon>
+											<ol-style-circle :radius="6" color="none">
+												<ol-style-fill color="#c11111"></ol-style-fill>
+												<ol-style-stroke color="#c1111199" width="8"></ol-style-stroke>
+											</ol-style-circle>
 										</ol-style>
 									</ol-feature>
 								</ol-source-vector>
@@ -83,12 +81,6 @@
 				</ol-layer-group>
 			</ol-map>
 			<ion-action-sheet trigger="open-action-sheet" header="Actions" :buttons="actionSheetButtons"></ion-action-sheet>
-			<!-- <ul>
-				<li>center : {{ currentCenter }}</li>
-				<li>resolution : {{ currentResolution }}</li>
-				<li>zoom : {{ currentZoom }}</li>
-				<li>rotation : {{ currentRotation }}</li>
-			</ul> -->
 		</ion-content>
 	</ion-page>
 </template>
@@ -96,12 +88,11 @@
 <script setup lang="ts">
 import { ref, inject, onMounted } from "vue";
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonActionSheet } from '@ionic/vue';
-import { fetchGeoJson } from '@/services/apiService';
+import { fetchAPI } from '@/services/apiService';
 import { Feature, View } from "ol";
 import { Geometry } from "ol/geom";
 import type { ObjectEvent } from "ol/Object";
-import { locate, layers } from 'ionicons/icons';
-
+import { locate, layers, map } from 'ionicons/icons';
 
 // Map Init Settings
 const projection = ref("EPSG:3857"); //  EPSG:4326 or EPSG:3857
@@ -119,7 +110,7 @@ const currentRotation = ref(rotation.value);
 const currentResolution = ref(0);
 
 // Location and geolocalitation settings
-const here = ref("imgs/here.png");
+const here = ref("imgs/iot.png");
 const view = ref<View>();
 const geoLocChange = (event: ObjectEvent) => {
 	console.log("geoLocChange: ", event);
@@ -148,35 +139,32 @@ const webglBBStyle = {
 // Makes some API call when component is mounted
 onMounted(async () => {
 	try {
-		// Setup Planimetry geojson
+		// Setup Planimetry, Assets and Path geojson
 		// const planimetriaGeoJSONData = await fetchGeoJson('map/salerno');
-		const planimetriaGeoJSONData = await fetchGeoJson('map/planimetry/battipaglia/4');
-		const planFeatures = geoJson.readFeatures(planimetriaGeoJSONData, {
-			featureProjection: 'EPSG:3857'
-		});
-		planimetriaFeatures.value = planFeatures as Feature<Geometry>[];
 
-		// Setup Assets geojson
-		const assetsGeoJSONData = await fetchGeoJson('map/assets/battipaglia');
-		const assFeatures = geoJson.readFeatures(assetsGeoJSONData, {
-			featureProjection: 'EPSG:3857'
-		});
-		assetsFeatures.value = assFeatures as Feature<Geometry>[];
+		const [planimetriaGeoJSONData, assetsGeoJSONData, pathGeoJSONData] = await Promise.all([
+			fetchAPI('map/planimetry/battipaglia/4'),
+			fetchAPI('map/assets/battipaglia'),
+			fetchAPI('path/battipaglia/4')
+		]);
 
-		// Setup Path geojson
-		const pathGeoJSONData = await fetchGeoJson('path/battipaglia/4');
-		const pathFeats = geoJson.readFeatures(pathGeoJSONData, {
+
+		planimetriaFeatures.value = geoJson.readFeatures(planimetriaGeoJSONData, {
 			featureProjection: 'EPSG:3857'
 		});
-		pathFeatures.value = pathFeats as Feature<Geometry>[];
+
+		assetsFeatures.value = geoJson.readFeatures(assetsGeoJSONData, {
+			featureProjection: 'EPSG:3857'
+		});
+
+		pathFeatures.value = geoJson.readFeatures(pathGeoJSONData, {
+			featureProjection: 'EPSG:3857'
+		});
 
 	} catch (error) {
-		console.error('Errore durante la richiesta API:', error);
+		console.error('Error while requesting API Service: ', error);
 	}
 });
-// const log = (type: string, event: MapBrowserEvent<UIEvent>) => {
-// 	console.log(type, event);
-// };
 
 function resolutionChanged(event: any) {
 	currentResolution.value = event.target.getResolution();
@@ -241,9 +229,14 @@ const actionSheetButtons = [
 
 <style scoped>
 ion-content {
+	ion-title {
+		font-size: medium;
+		padding: 8px;
+	}
+
 	ion-toolbar {
-		--background: #FF5555;
-		--color: #283044;
+		--background: #A22222;
+		--color: #FEFAE0;
 
 		--toolbar-content {
 			--background: grey;

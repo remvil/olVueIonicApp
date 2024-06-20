@@ -12,4 +12,6 @@ export type HospitalAsset = {
 	name: string;
 	description: string;
 	floor: number;
+	lat: number;
+	lon: number;
 };

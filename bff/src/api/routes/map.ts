@@ -45,7 +45,7 @@ export const mapRouter = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/GenericError'
  *     tags:
- *       - Mappa
+ *       - Map
  *     security:
  *       - Authorization: []
  *
@@ -101,7 +101,7 @@ mapRouter.get("/planimetry/:location/:plan?", (req: any, res) => {
  *             schema:
  *               $ref: '#/components/schemas/GetAssetsError'
  *     tags:
- *       - Assets
+ *       - Map
  *     security:
  *       - Authorization: []
  */
@@ -154,7 +154,7 @@ mapRouter.get("/assets/:location", (req: any, res: any) => {
  *             schema:
  *               $ref: '#/components/schemas/GenericError'
  *     tags:
- *       - Assets
+ *       - Map
  *     security:
  *       - Authorization: []
  */
@@ -204,7 +204,7 @@ mapRouter.get("/assets/:location/:id", (req: any, res: any) => {
  *             schema:
  *               $ref: '#/components/schemas/GetAssetsError'
  *     tags:
- *       - Assets
+ *       - Map
  *     security:
  *       - Authorization: []
  */

@@ -48,7 +48,7 @@ export const pathsRouter = express.Router();
  *    $ref: '#/components/schemas/GenericError'
  *
  */
-pathsRouter.get("/:location/:floor", (req, res) => {
+pathsRouter.get("/:location/:floor", (req: any, res: any) => {
 	const requiredLocation = req.params.location.toLowerCase();
 	if (requiredLocation !== "salerno" && requiredLocation !== "battipaglia")
 		return res.status(500).json({error: `Location '${requiredLocation}' is not served for now`});

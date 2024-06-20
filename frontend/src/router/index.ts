@@ -36,4 +36,11 @@ const router = createRouter({
 	routes,
 });
 
+router.beforeEach((to, from, next) => {
+	const url = to.fullPath;
+	const existingState = history.state || {};
+	history.replaceState({...existingState}, "", url);
+	next();
+});
+
 export default router;

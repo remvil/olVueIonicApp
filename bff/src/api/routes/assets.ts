@@ -27,9 +27,8 @@ export const assetsRouter = express.Router();
  *     security:
  *       - Authorization: []
  */
-assetsRouter.get("/"),
-	(req: Request, res: any) => {
-		const assets = getHospitalFakeAssets();
-		if (assets) res.status(200).json(assets);
-		else res.status(404).json({error: "Assets not Found"});
-	};
+assetsRouter.get("/:location?", (req: any, res: any) => {
+	const assets = getHospitalFakeAssets();
+	if (assets) res.status(200).json(assets);
+	else res.status(404).json({error: "Assets not Found"});
+});
