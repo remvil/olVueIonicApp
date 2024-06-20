@@ -88,11 +88,12 @@
 <script setup lang="ts">
 import { ref, inject, onMounted } from "vue";
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonActionSheet } from '@ionic/vue';
-import { fetchAPI } from '@/services/apiService';
+import { fetchAPIObservable, fetchAPIPromise } from '@/services/apiService';
 import { Feature, View } from "ol";
 import { Geometry } from "ol/geom";
 import type { ObjectEvent } from "ol/Object";
 import { locate, layers, map } from 'ionicons/icons';
+import { catchError, forkJoin, switchMap } from "rxjs";
 
 // Map Init Settings
 const projection = ref("EPSG:3857"); //  EPSG:4326 or EPSG:3857
@@ -139,32 +140,64 @@ const webglBBStyle = {
 // Makes some API call when component is mounted
 onMounted(async () => {
 	try {
-		// Setup Planimetry, Assets and Path geojson
-		// const planimetriaGeoJSONData = await fetchGeoJson('map/salerno');
 
-		const [planimetriaGeoJSONData, assetsGeoJSONData, pathGeoJSONData] = await Promise.all([
-			fetchAPI('map/planimetry/battipaglia/4'),
-			fetchAPI('map/assets/battipaglia'),
-			fetchAPI('path/battipaglia/4')
-		]);
+		// const [planimetriaGeoJSONData, assetsGeoJSONData, pathGeoJSONData] = await Promise.all([
+		// 	fetchAPIPromise('map/planimetry/battipaglia/4'),
+		// 	fetchAPIPromise('map/assets/battipaglia'),
+		// 	fetchAPIPromise('path/battipaglia/4')
+		// ]);
 
 
-		planimetriaFeatures.value = geoJson.readFeatures(planimetriaGeoJSONData, {
-			featureProjection: 'EPSG:3857'
+		// planimetriaFeatures.value = geoJson.readFeatures(planimetriaGeoJSONData, {
+		// 	featureProjection: 'EPSG:3857'
+		// });
+
+		// assetsFeatures.value = geoJson.readFeatures(assetsGeoJSONData, {
+		// 	featureProjection: 'EPSG:3857'
+		// });
+
+		// pathFeatures.value = geoJson.readFeatures(pathGeoJSONData, {
+		// 	featureProjection: 'EPSG:3857'
+		// });
+
+
+		forkJoin({
+			planimetria: fetchAPIObservable('map/planimetry/battipaglia/4'),
+			assets: fetchAPIObservable('map/assets/battipaglia'),
+			path: fetchAPIObservable('path/battipaglia/4')
+		}).pipe(
+			switchMap(({ planimetria, assets, path }) => {
+				planimetriaFeatures.value = geoJson.readFeatures(planimetria, { featureProjection: 'EPSG:3857' });
+				assetsFeatures.value = geoJson.readFeatures(assets, { featureProjection: 'EPSG:3857' });
+				pathFeatures.value = geoJson.readFeatures(path, { featureProjection: 'EPSG:3857' });
+
+				// return forkJoin({
+				// 	planimetriaGeoJSON,
+				// 	assetsGeoJSON,
+				// 	pathGeoJSON
+				// });
+			}),
+			catchError(error => {
+				console.error('Error in RxJS pipeline:', error);
+				throw error;
+			})
+		).subscribe({
+			next: ({ planimetriaGeoJSON, assetsGeoJSON, pathGeoJSON }) => {
+				// planimetriaFeatures.value = [planimetriaGeoJSON];
+				// assetsFeatures.value = [assetsGeoJSON];
+				// pathFeatures.value = [pathGeoJSON];
+				console.log(planimetriaGeoJSON);
+
+			},
+			error: (err) => {
+				console.error('Error while requesting API Service:', err);
+			}
 		});
-
-		assetsFeatures.value = geoJson.readFeatures(assetsGeoJSONData, {
-			featureProjection: 'EPSG:3857'
-		});
-
-		pathFeatures.value = geoJson.readFeatures(pathGeoJSONData, {
-			featureProjection: 'EPSG:3857'
-		});
-
 	} catch (error) {
 		console.error('Error while requesting API Service: ', error);
 	}
 });
+
 
 function resolutionChanged(event: any) {
 	currentResolution.value = event.target.getResolution();

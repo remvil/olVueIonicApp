@@ -56,7 +56,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonIcon, IonLabel, IonButton, IonSearchbar, IonModal, IonButtons, IonFooter } from '@ionic/vue';
 import { chevronForward, pricetag, close, navigateCircle, batteryHalf } from 'ionicons/icons';
-import { fetchAPI } from '@/services/apiService';
+import { fetchAPIPromise } from '@/services/apiService';
 import { HospitalAsset } from '@/models/hospitalAssets';
 import proj4 from "proj4";
 
@@ -92,10 +92,11 @@ async function navigateToPageMap(lat: number, lon: number) {
 		window.location.href = url; // Force full page reload
 	}, 200); // Adjust the timeout as needed
 }
+
 onMounted(async () => {
 	try {
 		// Requesting Assets to API Service
-		hospitalAssets.value = await fetchAPI('assets')
+		hospitalAssets.value = await fetchAPIPromise('assets')
 	} catch (error) {
 		console.error('Errore durante la richiesta API:', error);
 	}

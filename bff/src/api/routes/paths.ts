@@ -1,6 +1,9 @@
-import express, {Request, Response} from "express";
+import express from "express";
+import {Observable} from "rxjs";
+import {map} from "rxjs/operators";
 import path from "path";
 import fs from "fs";
+import {FeatureCollection} from "../types";
 
 export const pathsRouter = express.Router();
 
@@ -50,21 +53,44 @@ export const pathsRouter = express.Router();
  */
 pathsRouter.get("/:location/:floor", (req: any, res: any) => {
 	const requiredLocation = req.params.location.toLowerCase();
-	if (requiredLocation !== "salerno" && requiredLocation !== "battipaglia")
-		return res.status(500).json({error: `Location '${requiredLocation}' is not served for now`});
 	const requiredFloor = req.params.floor ?? 0;
+
+	if (requiredLocation !== "salerno" && requiredLocation !== "battipaglia") {
+		return res.status(500).json({error: `Location '${requiredLocation}' is not served for now`});
+	}
+
 	if (+requiredFloor > 4) {
 		return res.status(500).json({error: `Unable to find floor number ${requiredFloor}`});
 	}
+
 	const geojsonFilePath = !requiredLocation
 		? path.resolve(__dirname, `../../../data/geojson/battipaglia/plan4_paths.geojson`)
 		: path.resolve(__dirname, `../../../data/geojson/${requiredLocation}/plan4_paths.geojson`);
 
-	fs.readFile(geojsonFilePath, "utf8", (err, data) => {
-		if (err) {
-			return res.status(500).json({error: `Unable to read GeoJSON ${geojsonFilePath}`});
-		}
-		const geojson = JSON.parse(data);
-		res.json(geojson);
+	// Utilizzo di RxJS per gestire la lettura del file
+	const readFile$ = new Observable<string>((observer) => {
+		fs.readFile(geojsonFilePath, "utf8", (err, data) => {
+			if (err) {
+				observer.error(`Unable to read GeoJSON ${geojsonFilePath}`);
+			} else {
+				observer.next(data);
+				observer.complete();
+			}
+		});
 	});
+
+	// Gestione della risposta con RxJS
+	readFile$
+		.pipe(
+			map((data) => {
+				const geojson = JSON.parse(data) as FeatureCollection;
+				res.status(200).json(geojson);
+			})
+		)
+		.subscribe(
+			() => {},
+			(error) => {
+				res.status(500).json({error});
+			}
+		);
 });
