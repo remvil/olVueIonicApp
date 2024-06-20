@@ -1,7 +1,9 @@
 import express from "express";
+import {Observable, of} from "rxjs";
+import {map} from "rxjs/operators";
 import {getHospitalFakeAssets} from "../../helpers/functions";
 
-export const assetsRouter = express.Router();
+const assetsRouter = express.Router();
 
 /**
  * @swagger
@@ -14,7 +16,7 @@ export const assetsRouter = express.Router();
  *         content:
  *           application/json:
  *             schema:
- *              $ref: '#/components/schemas/HospitalAsset'
+ *               $ref: '#/components/schemas/HospitalAsset'
  *       404:
  *         description: >
  *            Riporta un messaggio che specifica che non è possibile trovare la risorsa richiesta
@@ -28,7 +30,30 @@ export const assetsRouter = express.Router();
  *       - Authorization: []
  */
 assetsRouter.get("/:location?", (req: any, res: any) => {
-	const assets = getHospitalFakeAssets();
-	if (assets) res.status(200).json(assets);
-	else res.status(404).json({error: "Assets not Found"});
+	// Simuliamo una chiamata asincrona con Observable
+	const assets$ = new Observable((observer) => {
+		const assets = getHospitalFakeAssets();
+		if (assets) {
+			observer.next(assets);
+			observer.complete();
+		} else {
+			observer.error({error: "Assets not Found"});
+		}
+	});
+
+	// Gestione della risposta con RxJS
+	assets$
+		.pipe(
+			map((assets) => {
+				res.status(200).json(assets);
+			})
+		)
+		.subscribe(
+			() => {},
+			(error) => {
+				res.status(404).json(error);
+			}
+		);
 });
+
+export {assetsRouter};

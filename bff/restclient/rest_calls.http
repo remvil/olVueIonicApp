@@ -43,6 +43,8 @@ GET http://localhost:3000/api/assets
 ######## TEST API ESTERNE ##########
 ####################################
 
+### Login 
+
 POST http://185.169.239.178:8180/localsenseadmin/login HTTP/1.1
 content-type: application/json
 
@@ -55,6 +57,27 @@ content-type: application/json
 
 GET http://185.169.239.178:8180/localsenseadmin/tag/getAllTagUpgrade HTTP/1.1
 content-type: application/json
+Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiI5My42NS4xODkuNjYiLCJleHAiOjE3MTg5MjU5MzYsInVpcCI6IjMzOTQyOTZhZDk3YjRlMjA3M2MzOTM0MjU0NTI2MTM2In0.j4nE6xHnUuriutivAyIEcgHa73Uppb3cHMpFY3_8PLM
+
+{
+    "username": "admin",
+}
+
+### Get All Resources
+
+GET http://185.169.239.178:8180/localsenseadmin/authorManage/getAllResource HTTP/1.1
+content-type: application/json
+Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiI5My42NS4xODkuNjYiLCJleHAiOjE3MTg5MjU5MzYsInVpcCI6IjMzOTQyOTZhZDk3YjRlMjA3M2MzOTM0MjU0NTI2MTM2In0.j4nE6xHnUuriutivAyIEcgHa73Uppb3cHMpFY3_8PLM
+
+{
+    "username": "admin",
+}
+
+### Get Layers
+
+GET http://185.169.239.178:8180/localsenseadmin/setting/getLayers HTTP/1.1
+content-type: application/json
+Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiI5My42NS4xODkuNjYiLCJleHAiOjE3MTg5MjU5MzYsInVpcCI6IjMzOTQyOTZhZDk3YjRlMjA3M2MzOTM0MjU0NTI2MTM2In0.j4nE6xHnUuriutivAyIEcgHa73Uppb3cHMpFY3_8PLM
 
 {
     "username": "admin",
