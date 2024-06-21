@@ -88,12 +88,12 @@
 <script setup lang="ts">
 import { ref, inject, onMounted } from "vue";
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonActionSheet } from '@ionic/vue';
-import { fetchAPIObservable, fetchAPIPromise } from '@/services/apiService';
+import { fetchAPIObservable } from '@/services/apiService';
 import { Feature, View } from "ol";
 import { Geometry } from "ol/geom";
 import type { ObjectEvent } from "ol/Object";
 import { locate, layers, map } from 'ionicons/icons';
-import { catchError, forkJoin, switchMap } from "rxjs";
+import { catchError, forkJoin, of, switchMap } from "rxjs";
 
 // Map Init Settings
 const projection = ref("EPSG:3857"); //  EPSG:4326 or EPSG:3857
@@ -167,15 +167,15 @@ onMounted(async () => {
 			path: fetchAPIObservable('path/battipaglia/4')
 		}).pipe(
 			switchMap(({ planimetria, assets, path }) => {
-				planimetriaFeatures.value = geoJson.readFeatures(planimetria, { featureProjection: 'EPSG:3857' });
-				assetsFeatures.value = geoJson.readFeatures(assets, { featureProjection: 'EPSG:3857' });
-				pathFeatures.value = geoJson.readFeatures(path, { featureProjection: 'EPSG:3857' });
+				const planimetriaGeoJSON = geoJson.readFeatures(planimetria, { featureProjection: 'EPSG:3857' });
+				const assetsGeoJSON = geoJson.readFeatures(assets, { featureProjection: 'EPSG:3857' });
+				const pathGeoJSON = geoJson.readFeatures(path, { featureProjection: 'EPSG:3857' });
 
-				// return forkJoin({
-				// 	planimetriaGeoJSON,
-				// 	assetsGeoJSON,
-				// 	pathGeoJSON
-				// });
+				return of({
+					planimetriaGeoJSON,
+					assetsGeoJSON,
+					pathGeoJSON
+				});
 			}),
 			catchError(error => {
 				console.error('Error in RxJS pipeline:', error);
@@ -183,18 +183,16 @@ onMounted(async () => {
 			})
 		).subscribe({
 			next: ({ planimetriaGeoJSON, assetsGeoJSON, pathGeoJSON }) => {
-				// planimetriaFeatures.value = [planimetriaGeoJSON];
-				// assetsFeatures.value = [assetsGeoJSON];
-				// pathFeatures.value = [pathGeoJSON];
-				console.log(planimetriaGeoJSON);
-
+				planimetriaFeatures.value = planimetriaGeoJSON;
+				assetsFeatures.value = assetsGeoJSON;
+				pathFeatures.value = pathGeoJSON;
 			},
 			error: (err) => {
-				console.error('Error while requesting API Service:', err);
+				console.error('Error while fetching API Service:', err);
 			}
 		});
 	} catch (error) {
-		console.error('Error while requesting API Service: ', error);
+		console.error('Error while fetching API Service: ', error);
 	}
 });
 
