@@ -1,6 +1,8 @@
 <template>
 	<ion-page>
 		<ion-content :fullscreen="true">
+			<!-- Loader -->
+			<div v-if="loading" class="loader"></div>
 			<ion-header>
 				<ion-toolbar>
 					<ion-title size="large"><ion-icon aria-hidden="true" :icon="map" />&nbsp;&nbsp;&nbsp; Floor 4
@@ -130,6 +132,7 @@ const pathFeatures = ref<Feature<Geometry>[]>([]);
 const format = inject("ol-format");
 const geoJson = new format.GeoJSON();
 
+
 // Styles GeoJSON
 const webglBBStyle = {
 	"stroke-width": 2,
@@ -137,30 +140,12 @@ const webglBBStyle = {
 	"fill-color": "#F3EFF5CC",
 };
 
+// Loader state
+const loading = ref(true);
+
 // Makes some API call when component is mounted
 onMounted(async () => {
 	try {
-
-		// const [planimetriaGeoJSONData, assetsGeoJSONData, pathGeoJSONData] = await Promise.all([
-		// 	fetchAPIPromise('map/planimetry/battipaglia/4'),
-		// 	fetchAPIPromise('map/assets/battipaglia'),
-		// 	fetchAPIPromise('path/battipaglia/4')
-		// ]);
-
-
-		// planimetriaFeatures.value = geoJson.readFeatures(planimetriaGeoJSONData, {
-		// 	featureProjection: 'EPSG:3857'
-		// });
-
-		// assetsFeatures.value = geoJson.readFeatures(assetsGeoJSONData, {
-		// 	featureProjection: 'EPSG:3857'
-		// });
-
-		// pathFeatures.value = geoJson.readFeatures(pathGeoJSONData, {
-		// 	featureProjection: 'EPSG:3857'
-		// });
-
-
 		forkJoin({
 			planimetria: fetchAPIObservable('map/planimetry/battipaglia/4'),
 			assets: fetchAPIObservable('map/assets/battipaglia'),
@@ -186,13 +171,15 @@ onMounted(async () => {
 				planimetriaFeatures.value = planimetriaGeoJSON;
 				assetsFeatures.value = assetsGeoJSON;
 				pathFeatures.value = pathGeoJSON;
+				loading.value = false; // Hide loader when data is loaded
 			},
 			error: (err) => {
 				console.error('Error while fetching API Service:', err);
+				loading.value = false; // Hide loader even if there's an error
 			}
 		});
 	} catch (error) {
-		console.error('Error while fetching API Service: ', error);
+		console.error('Error while requesting API Service: ', error);
 	}
 });
 

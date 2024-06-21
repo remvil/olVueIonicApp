@@ -57,8 +57,8 @@
 // 		return res.status(500).json({error: `Unable to find floor number ${requiredFloor}`});
 // 	}
 // 	const geojsonFilePath = !requiredLocation
-// 		? path.resolve(__dirname, `../../../data/geojson/battipaglia/plan4_paths.geojson`)
-// 		: path.resolve(__dirname, `../../../data/geojson/${requiredLocation}/plan4_paths.geojson`);
+// 		? path.resolve(__dirname, `../../../../data/geojson/battipaglia/plan4_paths.geojson`)
+// 		: path.resolve(__dirname, `../../../../data/geojson/${requiredLocation}/plan4_paths.geojson`);
 
 // 	fs.readFile(geojsonFilePath, "utf8", (err, data) => {
 // 		if (err) {

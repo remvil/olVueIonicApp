@@ -30,6 +30,12 @@ export const initLogger = () => {
 		case "prod":
 			Logger = new ProdLogger();
 			break;
+		case "qa":
+			Logger = new ProdLogger();
+			break;
+		case "demo":
+			Logger = new ProdLogger();
+			break;
 	}
 
 	info({event: `Logger initialized on '${ENVIRONMENT}' environment`});

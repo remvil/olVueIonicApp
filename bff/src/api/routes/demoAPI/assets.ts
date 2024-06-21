@@ -1,9 +1,9 @@
 import express from "express";
 import {Observable, of} from "rxjs";
 import {map} from "rxjs/operators";
-import {getHospitalFakeAssets} from "../../helpers/functions";
+import {getHospitalFakeAssets} from "../../../helpers/functions";
 
-const assetsRouter = express.Router();
+const dummyAssetsRouter = express.Router();
 
 /**
  * @swagger
@@ -29,7 +29,7 @@ const assetsRouter = express.Router();
  *     security:
  *       - Authorization: []
  */
-assetsRouter.get("/:location?", (req: any, res: any) => {
+dummyAssetsRouter.get("/:location?", (req: any, res: any) => {
 	// Simuliamo una chiamata asincrona con Observable
 	const assets$ = new Observable((observer) => {
 		const assets = getHospitalFakeAssets();
@@ -56,4 +56,4 @@ assetsRouter.get("/:location?", (req: any, res: any) => {
 		);
 });
 
-export {assetsRouter};
+export {dummyAssetsRouter};

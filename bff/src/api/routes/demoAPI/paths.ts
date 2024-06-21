@@ -3,9 +3,9 @@ import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
 import path from "path";
 import fs from "fs";
-import {FeatureCollection} from "../types";
+import {FeatureCollection} from "../../types";
 
-export const pathsRouter = express.Router();
+export const dummyPathsRouter = express.Router();
 
 /**
  * @swagger
@@ -51,7 +51,7 @@ export const pathsRouter = express.Router();
  *    $ref: '#/components/schemas/GenericError'
  *
  */
-pathsRouter.get("/:location/:floor", (req: any, res: any) => {
+dummyPathsRouter.get("/:location/:floor", (req: any, res: any) => {
 	const requiredLocation = req.params.location.toLowerCase();
 	const requiredFloor = req.params.floor ?? 0;
 
@@ -64,8 +64,8 @@ pathsRouter.get("/:location/:floor", (req: any, res: any) => {
 	}
 
 	const geojsonFilePath = !requiredLocation
-		? path.resolve(__dirname, `../../../data/geojson/battipaglia/plan4_paths.geojson`)
-		: path.resolve(__dirname, `../../../data/geojson/${requiredLocation}/plan4_paths.geojson`);
+		? path.resolve(__dirname, `../../../../data/geojson/battipaglia/plan4_paths.geojson`)
+		: path.resolve(__dirname, `../../../../data/geojson/${requiredLocation}/plan4_paths.geojson`);
 
 	// Utilizzo di RxJS per gestire la lettura del file
 	const readFile$ = new Observable<string>((observer) => {

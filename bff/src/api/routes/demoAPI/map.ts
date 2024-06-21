@@ -3,7 +3,7 @@ import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
 import path from "path";
 import fs from "fs";
-import {FeatureCollection, Feature} from "../types";
+import {FeatureCollection, Feature} from "../../types";
 
 function handleMissedLocationError(requiredLocation: string, res: any) {
 	if (!requiredLocation || (requiredLocation !== "salerno" && requiredLocation !== "battipaglia")) {
@@ -11,7 +11,7 @@ function handleMissedLocationError(requiredLocation: string, res: any) {
 	}
 }
 
-export const mapRouter = express.Router();
+export const dummyMapRouter = express.Router();
 
 /**
  * @swagger
@@ -57,15 +57,15 @@ export const mapRouter = express.Router();
  *    $ref: '#/components/schemas/GenericError'
  *
  */
-mapRouter.get("/planimetry/:location/:plan?", (req: any, res: any) => {
+dummyMapRouter.get("/planimetry/:location/:plan?", (req: any, res: any) => {
 	const requiredLocation = req.params.location.toLowerCase();
 	const requiredPlan = req.params.plan ?? 0;
 
 	handleMissedLocationError(requiredLocation, res);
 
 	const geojsonFilePath = !requiredPlan
-		? path.resolve(__dirname, `../../../data/geojson/${requiredLocation}/plan/plan0.geojson`)
-		: path.resolve(__dirname, `../../../data/geojson/${requiredLocation}/plan/plan${requiredPlan}.geojson`);
+		? path.resolve(__dirname, `../../../../data/geojson/${requiredLocation}/plan/plan0.geojson`)
+		: path.resolve(__dirname, `../../../../data/geojson/${requiredLocation}/plan/plan${requiredPlan}.geojson`);
 
 	// Utilizzo di RxJS per gestire la lettura del file
 	const readFile$ = new Observable<string>((observer) => {
@@ -125,12 +125,12 @@ mapRouter.get("/planimetry/:location/:plan?", (req: any, res: any) => {
  *     security:
  *       - Authorization: []
  */
-mapRouter.get("/assets/:location", (req: any, res: any) => {
+dummyMapRouter.get("/assets/:location", (req: any, res: any) => {
 	const requiredLocation = req.params.location.toLowerCase();
 
 	handleMissedLocationError(requiredLocation, res);
 
-	const geojsonFilePath = path.resolve(__dirname, `../../../data/geojson/${requiredLocation}/assets.geojson`);
+	const geojsonFilePath = path.resolve(__dirname, `../../../../data/geojson/${requiredLocation}/assets.geojson`);
 
 	// Utilizzo di RxJS per gestire la lettura del file
 	const readFile$ = new Observable<string>((observer) => {
@@ -198,13 +198,13 @@ mapRouter.get("/assets/:location", (req: any, res: any) => {
  *     security:
  *       - Authorization: []
  */
-mapRouter.get("/assets/:location/:id", (req: any, res: any) => {
+dummyMapRouter.get("/assets/:location/:id", (req: any, res: any) => {
 	const requiredLocation = req.params.location.toLowerCase();
 	const requiredId = req.params.id;
 
 	handleMissedLocationError(requiredLocation, res);
 
-	const geojsonFilePath = path.resolve(__dirname, `../../../data/geojson/${requiredLocation}/assets.geojson`);
+	const geojsonFilePath = path.resolve(__dirname, `../../../../data/geojson/${requiredLocation}/assets.geojson`);
 
 	// Utilizzo di RxJS per gestire la lettura del file
 	const readFile$ = new Observable<string>((observer) => {

@@ -64,8 +64,8 @@
 // 	}
 
 // 	const geojsonFilePath = !requiredPlan
-// 		? path.resolve(__dirname, `../../../data/geojson/${requiredLocation}/plan/plan0.geojson`)
-// 		: path.resolve(__dirname, `../../../data/geojson/${requiredLocation}/plan/plan${requiredPlan}.geojson`);
+// 		? path.resolve(__dirname, `../../../../data/geojson/${requiredLocation}/plan/plan0.geojson`)
+// 		: path.resolve(__dirname, `../../../../data/geojson/${requiredLocation}/plan/plan${requiredPlan}.geojson`);
 // 	fs.readFile(geojsonFilePath, "utf8", (err, data) => {
 // 		if (err) {
 // 			return res.status(500).json({error: `Map Error: Unable to read GeoJSON ${geojsonFilePath}`});
@@ -110,7 +110,7 @@
 // 	if (!requiredLocation) {
 // 		return res.status(500).json({error: `You need to specify required location string`});
 // 	}
-// 	const geojsonFilePath = path.resolve(__dirname, `../../../data/geojson/${requiredLocation}/assets.geojson`);
+// 	const geojsonFilePath = path.resolve(__dirname, `../../../../data/geojson/${requiredLocation}/assets.geojson`);
 // 	fs.readFile(geojsonFilePath, "utf8", (err, data) => {
 // 		if (err) {
 // 			return res.status(500).json({error: `Assets Error: Unable to read GeoJSON ${geojsonFilePath}`});
@@ -168,7 +168,7 @@
 // 		return res.status(500).json({error: `You need to specify required asset ID`});
 // 	}
 
-// 	const geojsonFilePath = path.resolve(__dirname, `../../../data/geojson/${requiredLocation}/assets.geojson`);
+// 	const geojsonFilePath = path.resolve(__dirname, `../../../../data/geojson/${requiredLocation}/assets.geojson`);
 // 	fs.readFile(geojsonFilePath, "utf8", (err, data) => {
 // 		if (err) {
 // 			return res.status(500).json({error: `Unable to read GeoJSON ${geojsonFilePath}`});

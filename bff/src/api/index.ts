@@ -1,8 +1,8 @@
+import {EnvType} from "./../envconfig";
 import express, {Request, Response} from "express";
-import {assetsRouter} from "./routes/assets";
-import {mapRouter} from "./routes/map";
-import {pathsRouter} from "./routes/paths";
-import {SERVER_PORT} from "../envconfig";
+import {ENVIRONMENT, SERVER_PORT} from "../envconfig";
+import {demoAPIRoutes} from "./routes/demoAPI";
+import {realAPIRoutes} from "./routes/realAPI";
 
 export const apiRouter = express.Router();
 /**
@@ -282,7 +282,14 @@ export const apiRouter = express.Router();
  *
  */
 apiRouter.get("/healthcheck", (_req: Request, res: Response) => res.json({message: `Hey I'm still alive and listening on port ${SERVER_PORT}`}));
-
-apiRouter.use("/assets", assetsRouter);
-apiRouter.use("/map", mapRouter);
-apiRouter.use("/path", pathsRouter);
+if (ENVIRONMENT === "demo") {
+	// Dummy data API
+	apiRouter.use("/assets", demoAPIRoutes.dummyAssetsRouter);
+	apiRouter.use("/map", demoAPIRoutes.dummyMapRouter);
+	apiRouter.use("/path", demoAPIRoutes.dummyPathsRouter);
+} else {
+	// BlueIOT data API
+	apiRouter.use("/assets", realAPIRoutes.assetsRouter);
+	apiRouter.use("/map", realAPIRoutes.mapRouter);
+	apiRouter.use("/path", realAPIRoutes.pathsRouter);
+}
