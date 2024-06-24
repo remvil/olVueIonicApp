@@ -4,6 +4,7 @@ import {map} from "rxjs/operators";
 import path from "path";
 import fs from "fs";
 import {FeatureCollection, Feature} from "../../types";
+import {Logger} from "../../../helpers/logger";
 
 function handleMissedLocationError(requiredLocation: string, res: any) {
 	if (!requiredLocation || (requiredLocation !== "salerno" && requiredLocation !== "battipaglia")) {
@@ -58,6 +59,8 @@ export const dummyMapRouter = express.Router();
  *
  */
 dummyMapRouter.get("/planimetry/:location/:plan?", (req: any, res: any) => {
+	Logger.writeEvent(`Requested resources from  ${req.originalUrl} route `);
+
 	const requiredLocation = req.params.location.toLowerCase();
 	const requiredPlan = req.params.plan ?? 0;
 
@@ -90,6 +93,7 @@ dummyMapRouter.get("/planimetry/:location/:plan?", (req: any, res: any) => {
 		.subscribe(
 			() => {},
 			(error) => {
+				Logger.writeException(error);
 				res.status(500).json({error});
 			}
 		);
@@ -126,6 +130,8 @@ dummyMapRouter.get("/planimetry/:location/:plan?", (req: any, res: any) => {
  *       - Authorization: []
  */
 dummyMapRouter.get("/assets/:location", (req: any, res: any) => {
+	Logger.writeEvent(`Requested resources from  ${req.originalUrl} route `);
+
 	const requiredLocation = req.params.location.toLowerCase();
 
 	handleMissedLocationError(requiredLocation, res);
@@ -155,6 +161,7 @@ dummyMapRouter.get("/assets/:location", (req: any, res: any) => {
 		.subscribe(
 			() => {},
 			(error) => {
+				Logger.writeException(error);
 				res.status(500).json({error});
 			}
 		);
@@ -199,6 +206,8 @@ dummyMapRouter.get("/assets/:location", (req: any, res: any) => {
  *       - Authorization: []
  */
 dummyMapRouter.get("/assets/:location/:id", (req: any, res: any) => {
+	Logger.writeEvent(`Requested resources from  ${req.originalUrl} route `);
+
 	const requiredLocation = req.params.location.toLowerCase();
 	const requiredId = req.params.id;
 
@@ -236,6 +245,72 @@ dummyMapRouter.get("/assets/:location/:id", (req: any, res: any) => {
 		.subscribe(
 			() => {},
 			(error) => {
+				Logger.writeException(error);
+				res.status(500).json({error});
+			}
+		);
+});
+
+/**
+ * @swagger
+ *
+ *
+ * /api/shortestpath/demo:
+ *   get:
+ *     summary: Simula il calcolo di un percorso migliore per un determinato asset
+ *     responses:
+ *       200:
+ *         description: Restituisce la Feature Collection contenente tutti il percorso migliore
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/FeatureCollection'
+ *       500:
+ *         description: Errore del server. Non riesce a trovare la risorsa richiesta
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/GenericError'
+ *     tags:
+ *       - Path
+ *     security:
+ *       - Authorization: []
+ *
+ *  @swagger
+ * components:
+ *   schema:
+ *    $ref: '#/components/schemas/GenericError'
+ *
+ */
+dummyMapRouter.get("/shortestpath/demo", (req: any, res: any) => {
+	Logger.writeEvent(`Requested resources from  ${req.originalUrl} route `);
+
+	const geojsonFilePath = path.resolve(__dirname, `../../../../data/geojson/battipaglia/fake_best_path.geojson`);
+
+	// Utilizzo di RxJS per gestire la lettura del file
+	const readFile$ = new Observable<string>((observer) => {
+		fs.readFile(geojsonFilePath, "utf8", (err, data) => {
+			if (err) {
+				observer.error(`Unable to read GeoJSON ${geojsonFilePath}`);
+			} else {
+				observer.next(data);
+				observer.complete();
+			}
+		});
+	});
+
+	// Gestione della risposta con RxJS
+	readFile$
+		.pipe(
+			map((data) => {
+				const geojson = JSON.parse(data) as FeatureCollection;
+				res.status(200).json(geojson);
+			})
+		)
+		.subscribe(
+			() => {},
+			(error) => {
+				Logger.writeException(error);
 				res.status(500).json({error});
 			}
 		);

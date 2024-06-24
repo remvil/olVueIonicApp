@@ -31,13 +31,13 @@ export const initLogger = () => {
 			Logger = new ProdLogger();
 			break;
 		case "qa":
-			Logger = new ProdLogger();
+			Logger = new DevLogger();
 			break;
 		case "demo":
-			Logger = new ProdLogger();
+			Logger = new DevLogger();
 			break;
 	}
 
-	info({event: `Logger initialized on '${ENVIRONMENT}' environment`});
+	info({Event: `Logger initialized on '${ENVIRONMENT}' environment`});
 	info({client: client});
 };

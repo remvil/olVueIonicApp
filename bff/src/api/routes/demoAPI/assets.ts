@@ -2,6 +2,8 @@ import express from "express";
 import {Observable, of} from "rxjs";
 import {map} from "rxjs/operators";
 import {getHospitalFakeAssets} from "../../../helpers/functions";
+import {Logger} from "../../../helpers/logger";
+import {log} from "console";
 
 const dummyAssetsRouter = express.Router();
 
@@ -30,7 +32,7 @@ const dummyAssetsRouter = express.Router();
  *       - Authorization: []
  */
 dummyAssetsRouter.get("/:location?", (req: any, res: any) => {
-	// Simuliamo una chiamata asincrona con Observable
+	Logger.writeEvent(`Requested resources from  ${req.originalUrl} route `);
 	const assets$ = new Observable((observer) => {
 		const assets = getHospitalFakeAssets();
 		if (assets) {
@@ -51,6 +53,7 @@ dummyAssetsRouter.get("/:location?", (req: any, res: any) => {
 		.subscribe(
 			() => {},
 			(error) => {
+				Logger.writeException(error);
 				res.status(404).json(error);
 			}
 		);

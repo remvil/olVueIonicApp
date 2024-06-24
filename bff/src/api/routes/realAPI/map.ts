@@ -1,9 +1,8 @@
 import express from "express";
-import {Observable, of} from "rxjs";
+import {of} from "rxjs";
 import {map} from "rxjs/operators";
 import path from "path";
-import fs from "fs";
-import {FeatureCollection, Feature} from "../../types";
+import {Logger} from "../../../helpers/logger";
 
 function handleMissedLocationError(requiredLocation: string, res: any) {
 	if (!requiredLocation || (requiredLocation !== "salerno" && requiredLocation !== "battipaglia")) {
@@ -12,7 +11,6 @@ function handleMissedLocationError(requiredLocation: string, res: any) {
 }
 
 export const mapRouter = express.Router();
-
 /**
  * @swagger
  *

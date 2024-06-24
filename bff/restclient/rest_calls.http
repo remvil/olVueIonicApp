@@ -25,14 +25,17 @@ GET http://localhost:3000/api/map/assets/battipaglia/1
 ######## PATHS ##########
 
 ### Path - api/path/plan4 - Path Flat 4 Battipaglia Offices
-GET http://localhost:3000/api/path/battipaglia/4
+GET http://localhost:3000/api/path/avellino/5
+
+### Path - api/map/shortestpath/demo - Simulate shortest path to Room 1
+GET http://localhost:3000/api/map/shortestpath/demo
 
 
 
 ######## ASSETS ##########
 
-### Assets - api/assets/salerno - List All Salerno Generic Flat Assets
-GET http://localhost:3000/api/assets
+### Assets - api/assets - List all Generic Flat Assets
+GET http://localhost:3000/api/assets/battipaglia
 
 
 
@@ -57,7 +60,7 @@ content-type: application/json
 
 GET http://185.169.239.178:8180/localsenseadmin/tag/getAllTagUpgrade HTTP/1.1
 content-type: application/json
-Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiI5My42NS4xODkuNjYiLCJleHAiOjE3MTg5MjU5MzYsInVpcCI6IjMzOTQyOTZhZDk3YjRlMjA3M2MzOTM0MjU0NTI2MTM2In0.j4nE6xHnUuriutivAyIEcgHa73Uppb3cHMpFY3_8PLM
+Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiI5My42NS4xODkuNjYiLCJleHAiOjE3MTkwMTI5MTYsInVpcCI6IjMzOTQyOTZhZDk3YjRlMjA3M2MzOTM0MjU0NTI2MTM2In0.tl7hAW_HM8ZtmDSMooWsWj-ApbCwLC8Tfl6dIm7f2q8
 
 {
     "username": "admin",
@@ -67,7 +70,7 @@ Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiI5My42
 
 GET http://185.169.239.178:8180/localsenseadmin/authorManage/getAllResource HTTP/1.1
 content-type: application/json
-Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiI5My42NS4xODkuNjYiLCJleHAiOjE3MTg5MjU5MzYsInVpcCI6IjMzOTQyOTZhZDk3YjRlMjA3M2MzOTM0MjU0NTI2MTM2In0.j4nE6xHnUuriutivAyIEcgHa73Uppb3cHMpFY3_8PLM
+Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiI5My42NS4xODkuNjYiLCJleHAiOjE3MTkwMTI5MTYsInVpcCI6IjMzOTQyOTZhZDk3YjRlMjA3M2MzOTM0MjU0NTI2MTM2In0.tl7hAW_HM8ZtmDSMooWsWj-ApbCwLC8Tfl6dIm7f2q8
 
 {
     "username": "admin",

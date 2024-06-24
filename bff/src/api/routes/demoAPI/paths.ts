@@ -4,6 +4,7 @@ import {map} from "rxjs/operators";
 import path from "path";
 import fs from "fs";
 import {FeatureCollection} from "../../types";
+import {Logger} from "../../../helpers/logger";
 
 export const dummyPathsRouter = express.Router();
 
@@ -52,6 +53,7 @@ export const dummyPathsRouter = express.Router();
  *
  */
 dummyPathsRouter.get("/:location/:floor", (req: any, res: any) => {
+	Logger.writeEvent(`Requested resources from  ${req.originalUrl} route `);
 	const requiredLocation = req.params.location.toLowerCase();
 	const requiredFloor = req.params.floor ?? 0;
 
@@ -90,6 +92,7 @@ dummyPathsRouter.get("/:location/:floor", (req: any, res: any) => {
 		.subscribe(
 			() => {},
 			(error) => {
+				Logger.writeException(error);
 				res.status(500).json({error});
 			}
 		);

@@ -1,4 +1,6 @@
+import {error, info} from "console";
 import {ILogger} from "..";
+import {ENVIRONMENT, VERSION} from "./../../../envconfig";
 
 export class ProdLogger implements ILogger {
 	writeTrace(message: string, severityLevel: number, err?: string) {
@@ -14,15 +16,15 @@ export class ProdLogger implements ILogger {
 					message: message,
 					severity: severityLevel,
 			  };
-		console.info(trace);
+		info(trace);
 	}
 	writeException(err: Error, code: string = "001-Unknown", prop: string = "unhandled") {
-		console.error({
+		error({
 			properties: {code: code, handledAt: prop},
 			error: err.message,
 		});
 	}
 	writeEvent(name: string) {
-		console.info({event: name});
+		info({Event: name, Environment: ENVIRONMENT, Version: VERSION});
 	}
 }
