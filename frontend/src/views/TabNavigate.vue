@@ -1,3 +1,4 @@
+<!-- eslint-disable @typescript-eslint/no-loss-of-precision -->
 <template>
 	<ion-page>
 		<ion-content :fullscreen="true">
@@ -12,7 +13,7 @@
 
 			<ol-map class="map-container" style="height: 90vh" :loadTilesWhileAnimating="true"
 				:loadTilesWhileInteracting="true">
-				<ol-view ref="view" :center="absoluteCenter" :rotation="rotation" :zoom="zoom" :minZoom="20"
+				<ol-view ref="view" :center="absoluteCenter" :rotation="rotation" :zoom="zoom" :minZoom="18"
 					:projection="projection" @change:center="centerChanged" @change:resolution="resolutionChanged"
 					@change:rotation="rotationChanged" />
 				<button class="btn-map btn-locate" type="button" @click="changeCenter()">
@@ -22,9 +23,9 @@
 					<ion-icon aria-hidden="true" :icon="layers" />
 				</button>
 				<ol-layer-group :opacity="1">
-					<!-- <ol-tile-layer>
-						<ol-source-osm crossOrigin="anonymous" />
-					</ol-tile-layer> -->
+					<ol-tile-layer>
+						<!-- <ol-source-osm crossOrigin="anonymous" /> -->
+					</ol-tile-layer>
 
 					<!-- BBox Layer -->
 					<ol-webgl-vector-layer :styles="[webglBBStyle]">
@@ -54,13 +55,35 @@
 							:projection="projection">
 						</ol-source-vector>
 						<ol-style>
-							<ol-style-icon :src="here" :scale="0.06" :stroke="2" class="blink"></ol-style-icon>
+							<ol-style-icon :src="bleTags" :scale="0.05" :stroke="2"></ol-style-icon>
 						</ol-style>
+					</ol-vector-layer>
+
+					<!-- Fake path -->
+					<ol-vector-layer>
+						<ol-source-vector>
+							<ol-feature ref="animationPath">
+								<ol-geom-line-string :coordinates="fakeBestPathFeature"></ol-geom-line-string>
+								<ol-style-flowline color="#c1111100" color2="#c11111ff" :width="0" :width2="4" :arrow="1" />
+							</ol-feature>
+							<ol-animation-path v-if="animationPath" :path="animationPath?.feature" :duration="10000" :repeat="2">
+								<ol-feature>
+									<ol-geom-point :coordinates="fakeBestPathFeature[0]"></ol-geom-point>
+									<ol-style>
+										<ol-style-circle :radius="5">
+											<ol-style-fill color="#F1aa11"></ol-style-fill>
+											<ol-style-stroke color="#Eaa11199" width="8"></ol-style-stroke>
+										</ol-style-circle>
+									</ol-style>
+								</ol-feature>
+							</ol-animation-path>
+						</ol-source-vector>
 					</ol-vector-layer>
 
 					<!-- <ol-rotate-control></ol-rotate-control> -->
 
 					<ol-interaction-link />
+
 
 					<!-- Geolocation -->
 					<ol-geolocation :projection="projection" @change:fakePosition="geoLocChange">
@@ -96,6 +119,8 @@ import { Geometry } from "ol/geom";
 import type { ObjectEvent } from "ol/Object";
 import { locate, layers, map } from 'ionicons/icons';
 import { catchError, forkJoin, of, switchMap } from "rxjs";
+import type AnimationPath from "ol-ext/featureanimation/Path";
+import proj4 from "proj4";
 
 // Map Init Settings
 const projection = ref("EPSG:3857"); //  EPSG:4326 or EPSG:3857
@@ -112,8 +137,19 @@ const currentZoom = ref(zoom.value);
 const currentRotation = ref(rotation.value);
 const currentResolution = ref(0);
 
+const fakeBestPathFeature = ref([
+	proj4("EPSG:4326", "EPSG:3857", [14.972792162, 40.61709270]),
+	proj4("EPSG:4326", "EPSG:3857", [14.972774462, 40.61710186]),
+	proj4("EPSG:4326", "EPSG:3857", [14.972738059, 40.61713377]),
+	proj4("EPSG:4326", "EPSG:3857", [14.972779822, 40.617160060]),
+	proj4("EPSG:4326", "EPSG:3857", [14.972800441, 40.61716578]),
+	proj4("EPSG:4326", "EPSG:3857", [14.972820921, 40.61714121])
+]);
+
+const animationPath = ref<{ feature: AnimationPath } | null>(null);
+
 // Location and geolocalitation settings
-const here = ref("imgs/iot.png");
+const bleTags = ref("imgs/iot.png");
 const view = ref<View>();
 const geoLocChange = (event: ObjectEvent) => {
 	console.log("geoLocChange: ", event);
@@ -149,17 +185,20 @@ onMounted(async () => {
 		forkJoin({
 			planimetria: fetchAPIObservable('map/planimetry/battipaglia/4'),
 			assets: fetchAPIObservable('map/assets/battipaglia'),
-			path: fetchAPIObservable('path/battipaglia/4')
+			path: fetchAPIObservable('path/battipaglia/4'),
+			shortestPath: fetchAPIObservable('map/shortestpath/demo')
 		}).pipe(
-			switchMap(({ planimetria, assets, path }) => {
+			switchMap(({ planimetria, assets, path /*, shortestPath */ }) => {
 				const planimetriaGeoJSON = geoJson.readFeatures(planimetria, { featureProjection: 'EPSG:3857' });
 				const assetsGeoJSON = geoJson.readFeatures(assets, { featureProjection: 'EPSG:3857' });
 				const pathGeoJSON = geoJson.readFeatures(path, { featureProjection: 'EPSG:3857' });
+				// const shortestPathCoords = geoJson.readFeature(shortestPath, { featureProjection: 'EPSG:3857' });
 
 				return of({
 					planimetriaGeoJSON,
 					assetsGeoJSON,
-					pathGeoJSON
+					pathGeoJSON,
+					// shortestPathCoords
 				});
 			}),
 			catchError(error => {
@@ -167,10 +206,12 @@ onMounted(async () => {
 				throw error;
 			})
 		).subscribe({
-			next: ({ planimetriaGeoJSON, assetsGeoJSON, pathGeoJSON }) => {
+			next: ({ planimetriaGeoJSON, assetsGeoJSON, pathGeoJSON/*, shortestPathCoords */ }) => {
 				planimetriaFeatures.value = planimetriaGeoJSON;
 				assetsFeatures.value = assetsGeoJSON;
 				pathFeatures.value = pathGeoJSON;
+				// console.log(shortestPathCoords);
+
 				loading.value = false; // Hide loader when data is loaded
 			},
 			error: (err) => {
@@ -243,6 +284,7 @@ const actionSheetButtons = [
 		},
 	},
 ];
+
 </script>
 
 <style scoped>
@@ -276,7 +318,7 @@ ion-content {
 .ol-map {
 	position: relative;
 	background: repeating-linear-gradient(45deg,
-			#fffafa,
+			#fafffa,
 			#fffafa 6px,
 			#ffffff 6px,
 			#ffffff 12px);
@@ -300,7 +342,7 @@ ion-content {
 
 .btn-locate {
 	left: 8px;
-	top: 78px;
+	bottom: 70px;
 }
 
 .btn-layers {

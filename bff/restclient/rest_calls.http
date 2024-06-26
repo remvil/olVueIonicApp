@@ -21,7 +21,6 @@ GET http://localhost:3000/api/map/assets/battipaglia
 GET http://localhost:3000/api/map/assets/battipaglia/1
 
 
-
 ######## PATHS ##########
 
 ### Path - api/path/plan4 - Path Flat 4 Battipaglia Offices
@@ -29,7 +28,6 @@ GET http://localhost:3000/api/path/avellino/5
 
 ### Path - api/map/shortestpath/demo - Simulate shortest path to Room 1
 GET http://localhost:3000/api/map/shortestpath/demo
-
 
 
 ######## ASSETS ##########
@@ -60,7 +58,7 @@ content-type: application/json
 
 GET http://185.169.239.178:8180/localsenseadmin/tag/getAllTagUpgrade HTTP/1.1
 content-type: application/json
-Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiI5My42NS4xODkuNjYiLCJleHAiOjE3MTkwMTI5MTYsInVpcCI6IjMzOTQyOTZhZDk3YjRlMjA3M2MzOTM0MjU0NTI2MTM2In0.tl7hAW_HM8ZtmDSMooWsWj-ApbCwLC8Tfl6dIm7f2q8
+Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiIxNzYuMjQ1LjEzOS4yMDAiLCJleHAiOjE3MTkzNDk1NTEsInVpcCI6IjMzOTQyOTZhZDk3YjRlMjA3M2MzOTM0MjU0NTI2MTM2In0.KIy91DLdepkU6Pu0bCvYbVBk6OlD-e2RmDp5BFpbaPo
 
 {
     "username": "admin",
@@ -70,7 +68,7 @@ Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiI5My42
 
 GET http://185.169.239.178:8180/localsenseadmin/authorManage/getAllResource HTTP/1.1
 content-type: application/json
-Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiI5My42NS4xODkuNjYiLCJleHAiOjE3MTkwMTI5MTYsInVpcCI6IjMzOTQyOTZhZDk3YjRlMjA3M2MzOTM0MjU0NTI2MTM2In0.tl7hAW_HM8ZtmDSMooWsWj-ApbCwLC8Tfl6dIm7f2q8
+Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiIxNzYuMjQ1LjEzOS4yMDAiLCJleHAiOjE3MTkzNDk1NTEsInVpcCI6IjMzOTQyOTZhZDk3YjRlMjA3M2MzOTM0MjU0NTI2MTM2In0.KIy91DLdepkU6Pu0bCvYbVBk6OlD-e2RmDp5BFpbaPo
 
 {
     "username": "admin",
@@ -78,10 +76,25 @@ Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiI5My42
 
 ### Get Layers
 
-GET http://185.169.239.178:8180/localsenseadmin/setting/getLayers HTTP/1.1
+GET http://185.169.239.178:8180/localsense/tag/getTagAreaAndVertex HTTP/1.1
 content-type: application/json
-Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiI5My42NS4xODkuNjYiLCJleHAiOjE3MTg5MjU5MzYsInVpcCI6IjMzOTQyOTZhZDk3YjRlMjA3M2MzOTM0MjU0NTI2MTM2In0.j4nE6xHnUuriutivAyIEcgHa73Uppb3cHMpFY3_8PLM
+Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiIxNzYuMjQ1LjEzOS4yMDAiLCJleHAiOjE3MTkzNDk1NTEsInVpcCI6IjMzOTQyOTZhZDk3YjRlMjA3M2MzOTM0MjU0NTI2MTM2In0.KIy91DLdepkU6Pu0bCvYbVBk6OlD-e2RmDp5BFpbaPo
 
 {
     "username": "admin",
 }
+
+
+### Get Tag Layer
+
+GET http://185.169.239.178:8180/localsenseadmin/setting/getLayers HTTP/1.1
+content-type: application/json
+Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiIxNzYuMjQ1LjEzOS4yMDAiLCJleHAiOjE3MTkzNDk1NTEsInVpcCI6IjMzOTQyOTZhZDk3YjRlMjA3M2MzOTM0MjU0NTI2MTM2In0.KIy91DLdepkU6Pu0bCvYbVBk6OlD-e2RmDp5BFpbaPo
+
+{
+    "tagIds": "256481716798220",
+}
+
+# "217520344667621": "Badge Ospiti",
+# "256481716798220": "Braccialetto",
+# "132317272721037": "Badge Mariano"
