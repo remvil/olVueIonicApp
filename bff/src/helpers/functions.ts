@@ -1,3 +1,4 @@
+import {Feature, FeatureCollection} from "../api/types";
 import {HospitalAsset} from "./types";
 import Jabber from "jabber";
 
@@ -6,20 +7,18 @@ function getRandomBatteryStatus(): number {
 	return Math.floor(Math.random() * 101);
 }
 
-const fakeDescription =
-	"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ullamcorper dignissim cras tincidunt lobortis feugiat vivamus at augue. Eu ultrices vitae auctor eu augue ut lectus arcu bibendum. Et molestie ac feugiat sed lectus vestibulum mattis ullamcorper. Pretium quam vulputate dignissim suspendisse in. Nibh tortor id aliquet lectus proin.";
-
 export const getHospitalFakeAssets = (): HospitalAsset[] => {
 	const hospitalAssets = <HospitalAsset[]>[
 		{
 			id: 1,
-			batteryLevel: getRandomBatteryStatus(),
-			tagId: "1a2b3c4d",
-			name: "ECG",
-			description: jabber.createParagraph(150),
+			batteryLevel: 15,
+			tagId: "1u4v5w6x",
+			name: "Tag1 Ingresso",
+			description:
+				"Tempora voluptas animi molestiae. Repellendus omnis eos cumque quam. Quaerat voluptates voluptate autem est ipsam. Consequatur corrupti iste architecto ex aliquam autem quia.",
 			floor: 4,
-			lat: 40.61723200848598,
-			lon: 14.972969138101146,
+			lat: 40.61715021229716,
+			lon: 14.972687877530161,
 		},
 		{
 			id: 2,
@@ -213,4 +212,20 @@ export const getHospitalFakeAssets = (): HospitalAsset[] => {
 		},
 	];
 	return hospitalAssets;
+};
+
+export const getConvertedFeatures = (features: Feature[]) => {
+	return features.map((feature) => {
+		const {id, batteryLevel, tagId, name, description, floor, lon, lat} = feature.properties;
+		return {
+			id,
+			batteryLevel,
+			tagId,
+			name,
+			description,
+			floor,
+			lon,
+			lat,
+		};
+	});
 };

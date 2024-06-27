@@ -33,7 +33,7 @@ GET http://localhost:3000/api/map/shortestpath/demo
 ######## ASSETS ##########
 
 ### Assets - api/assets - List all Generic Flat Assets
-GET http://localhost:3000/api/assets/battipaglia
+GET http://localhost:3000/api/assets/list/battipaglia
 
 
 

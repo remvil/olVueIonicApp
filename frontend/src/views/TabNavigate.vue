@@ -227,6 +227,9 @@ onMounted(async () => {
 			},
 			error: (err) => {
 				console.error('Error while fetching API Service:', err);
+			},
+			complete: () => {
+				loading.value = false;
 			}
 		});
 	} catch (error) {

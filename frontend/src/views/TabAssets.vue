@@ -11,7 +11,7 @@
 			<ion-list lines="full">
 				<ion-item v-for="asset in filteredAssets" :key="asset.id" @click="doAction(asset)">
 					<ion-icon size="small" :icon="pricetag" slot="start"></ion-icon>
-					<ion-icon v-if="asset.batteryLevel < 10" class="blinking" size="small" :icon="batteryHalf" color="danger"
+					<ion-icon v-if="asset.batteryLevel < 20" class="blinking" size="small" :icon="batteryHalf" color="danger"
 						slot="end" />
 					<ion-label>{{ asset.name }}</ion-label>
 					<ion-button slot="end" color="none">
@@ -56,7 +56,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonIcon, IonLabel, IonButton, IonSearchbar, IonModal, IonButtons, IonFooter } from '@ionic/vue';
 import { chevronForward, pricetag, close, navigateCircle, batteryHalf } from 'ionicons/icons';
-import { fetchAPIPromise } from '@/services/apiService';
+import { fetchAPIObservable } from '@/services/apiService';
 import { HospitalAsset } from '@/models/hospitalAssets';
 import proj4 from "proj4";
 
@@ -95,10 +95,20 @@ async function navigateToPageMap(lat: number, lon: number) {
 
 onMounted(async () => {
 	try {
-		// Requesting Assets to API Service
-		hospitalAssets.value = await fetchAPIPromise('assets')
+		// Requesting Assets to Observable API Service
+		fetchAPIObservable('assets/list/battipaglia').subscribe({
+			next: (data: HospitalAsset[]) => {
+				hospitalAssets.value = data;
+			},
+			error: (error: any) => {
+				console.error('Error API:', error);
+			}
+		});
+
+		// Requesting Assets to Promise API Service
+		// hospitalAssets.value = await fetchAPIPromise('assets/list')
 	} catch (error) {
-		console.error('Errore durante la richiesta API:', error);
+		console.error('Error API:', error);
 	}
 });
 

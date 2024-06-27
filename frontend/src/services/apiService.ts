@@ -8,6 +8,8 @@ export function fetchAPIPromise(endpoint: string) {
 	return useFetch(`${BASE_URL}/${endpoint}`)
 		.json()
 		.then(({data, error}) => {
+			console.log(data);
+
 			if (error.value) {
 				throw new Error(`Errore durante la richiesta API: ${error.value.message}`);
 			}
@@ -19,14 +21,13 @@ export function fetchAPIObservable(endpoint: string): Observable<any> {
 	return from(useFetch(`${BASE_URL}/${endpoint}`).json()).pipe(
 		map(({data, error}) => {
 			if (error.value) {
-				throw new Error(`Errore durante la richiesta API: ${error.value.message}`);
+				throw new Error(`Obs API Error: ${error.value.message}`);
 			}
 			return data.value;
 		}),
 		catchError((error) => {
-			console.error("Errore durante la richiesta API:", error);
+			console.error("Obs API Error catched:", error);
 			return throwError(error);
 		})
 	);
 }
-
