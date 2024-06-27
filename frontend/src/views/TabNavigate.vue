@@ -24,7 +24,7 @@
 				</button>
 				<ol-layer-group :opacity="1">
 					<ol-tile-layer>
-						<!-- <ol-source-osm crossOrigin="anonymous" /> -->
+						<!-- <ol-source-osm :url="osmUrl" crossOrigin="anonymous" /> -->
 					</ol-tile-layer>
 
 					<!-- BBox Layer -->
@@ -41,7 +41,7 @@
 						</ol-style>
 					</ol-vector-layer>
 
-					<!-- Features path Layer-->
+					<!-- All Rooms path Layer-->
 					<!-- <ol-vector-layer>
 						<ol-source-vector :format="geoJson" crossOrigin="anonymous" :features="pathFeatures" />
 						<ol-style>
@@ -49,17 +49,38 @@
 						</ol-style>
 					</ol-vector-layer> -->
 
+					<!-- Feature asset description -->
+					<ol-interaction-select @select="featureSelected" :condition="selectCondition"
+						:filter="selectInteactionFilter">
+						<ol-style>
+							<ol-style-stroke color="blue" :width="6"></ol-style-stroke>
+							<ol-style-fill color="rgba(255,255,255,0.2)"></ol-style-fill>
+							<ol-style-circle :radius="14">
+								<ol-style-fill color="#3333ffff"></ol-style-fill>
+								<ol-style-stroke color="#3333ff55" width="8"></ol-style-stroke>
+							</ol-style-circle>
+						</ol-style>
+					</ol-interaction-select>
 					<!-- Features assets Layer -->
 					<ol-vector-layer>
 						<ol-source-vector :format="geoJson" crossOrigin="anonymous" :features="assetsFeatures"
 							:projection="projection">
 						</ol-source-vector>
 						<ol-style>
-							<ol-style-icon :src="bleTags" :scale="0.05" :stroke="2"></ol-style-icon>
+							<ol-style-circle :radius="6">
+								<ol-style-fill color="#3333ffff"></ol-style-fill>
+								<ol-style-stroke color="#3333ff99" width="20"></ol-style-stroke>
+							</ol-style-circle>
 						</ol-style>
 					</ol-vector-layer>
+					<!-- OVERLAY POSITION -->
+					<ol-overlay :position="selectedTagPos" v-if="selectedTagName != ''">
+						<div class="overlay-content">
+							{{ selectedTagName }}
+						</div>
+					</ol-overlay>
 
-					<!-- Fake path -->
+					<!-- Fake Best path -->
 					<ol-vector-layer>
 						<ol-source-vector>
 							<ol-feature ref="animationPath">
@@ -83,7 +104,6 @@
 					<!-- <ol-rotate-control></ol-rotate-control> -->
 
 					<ol-interaction-link />
-
 
 					<!-- Geolocation -->
 					<ol-geolocation :projection="projection" @change:fakePosition="geoLocChange">
@@ -118,14 +138,16 @@ import { Feature, View } from "ol";
 import { Geometry } from "ol/geom";
 import type { ObjectEvent } from "ol/Object";
 import { locate, layers, map } from 'ionicons/icons';
-import { catchError, forkJoin, of, switchMap } from "rxjs";
-import type AnimationPath from "ol-ext/featureanimation/Path";
+import { catchError, forkJoin, map as rxmap } from "rxjs";
+import AnimationPath from "ol-ext/featureanimation/Path";
 import proj4 from "proj4";
+import { Coordinate } from "ol/coordinate";
 
 // Map Init Settings
 const projection = ref("EPSG:3857"); //  EPSG:4326 or EPSG:3857
 const zoom = ref(22);
 const rotation = ref(0);
+// const osmUrl = ref('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}');
 // const fakePosition = ref([1652955.865991945, 4958950.611020285]); // Fake position Infotel Salerno
 // const absoluteCenterPosition = ref([1652940.865991945, 4958940.611020285]); // Absolute position Infotel Salerno
 
@@ -137,19 +159,10 @@ const currentZoom = ref(zoom.value);
 const currentRotation = ref(rotation.value);
 const currentResolution = ref(0);
 
-const fakeBestPathFeature = ref([
-	proj4("EPSG:4326", "EPSG:3857", [14.972792162, 40.61709270]),
-	proj4("EPSG:4326", "EPSG:3857", [14.972774462, 40.61710186]),
-	proj4("EPSG:4326", "EPSG:3857", [14.972738059, 40.61713377]),
-	proj4("EPSG:4326", "EPSG:3857", [14.972779822, 40.617160060]),
-	proj4("EPSG:4326", "EPSG:3857", [14.972800441, 40.61716578]),
-	proj4("EPSG:4326", "EPSG:3857", [14.972820921, 40.61714121])
-]);
-
-const animationPath = ref<{ feature: AnimationPath } | null>(null);
+const animationPath = ref<{ feature: typeof AnimationPath } | null>(null)
 
 // Location and geolocalitation settings
-const bleTags = ref("imgs/iot.png");
+// const bleTags = ref("imgs/iot.png");
 const view = ref<View>();
 const geoLocChange = (event: ObjectEvent) => {
 	console.log("geoLocChange: ", event);
@@ -167,7 +180,6 @@ const pathFeatures = ref<Feature<Geometry>[]>([]);
 // Setup properties geoJSON
 const format = inject("ol-format");
 const geoJson = new format.GeoJSON();
-
 
 // Styles GeoJSON
 const webglBBStyle = {
@@ -188,35 +200,33 @@ onMounted(async () => {
 			path: fetchAPIObservable('path/battipaglia/4'),
 			shortestPath: fetchAPIObservable('map/shortestpath/demo')
 		}).pipe(
-			switchMap(({ planimetria, assets, path /*, shortestPath */ }) => {
+			rxmap(({ planimetria, assets, path, shortestPath }) => {
 				const planimetriaGeoJSON = geoJson.readFeatures(planimetria, { featureProjection: 'EPSG:3857' });
 				const assetsGeoJSON = geoJson.readFeatures(assets, { featureProjection: 'EPSG:3857' });
 				const pathGeoJSON = geoJson.readFeatures(path, { featureProjection: 'EPSG:3857' });
+				const shortestPathArray = shortestPath.features[0].geometry.coordinates;
 				// const shortestPathCoords = geoJson.readFeature(shortestPath, { featureProjection: 'EPSG:3857' });
 
-				return of({
+				return {
 					planimetriaGeoJSON,
 					assetsGeoJSON,
 					pathGeoJSON,
-					// shortestPathCoords
-				});
+					shortestPathArray
+				};
 			}),
 			catchError(error => {
 				console.error('Error in RxJS pipeline:', error);
 				throw error;
 			})
 		).subscribe({
-			next: ({ planimetriaGeoJSON, assetsGeoJSON, pathGeoJSON/*, shortestPathCoords */ }) => {
+			next: ({ planimetriaGeoJSON, assetsGeoJSON, pathGeoJSON, shortestPathArray }) => {
 				planimetriaFeatures.value = planimetriaGeoJSON;
 				assetsFeatures.value = assetsGeoJSON;
 				pathFeatures.value = pathGeoJSON;
-				// console.log(shortestPathCoords);
-
-				loading.value = false; // Hide loader when data is loaded
+				convertArrayEPSG4326toEPSG3857(shortestPathArray);
 			},
 			error: (err) => {
 				console.error('Error while fetching API Service:', err);
-				loading.value = false; // Hide loader even if there's an error
 			}
 		});
 	} catch (error) {
@@ -224,6 +234,44 @@ onMounted(async () => {
 	}
 });
 
+function convertArrayEPSG4326toEPSG3857(array: Coordinate[]) {
+	const convertedArray: Coordinate[] = [];
+	array.forEach((element) => {
+		convertedArray.push(proj4("EPSG:4326", "EPSG:3857", element));
+	});
+	return convertedArray;
+}
+// Simulate the shortest path found to a specific room
+const fakeBestPathFeature = ref([
+	proj4("EPSG:4326", "EPSG:3857", [14.972792162, 40.61709270]),
+	proj4("EPSG:4326", "EPSG:3857", [14.972774462, 40.61710186]),
+	proj4("EPSG:4326", "EPSG:3857", [14.972738059, 40.61713377]),
+	proj4("EPSG:4326", "EPSG:3857", [14.972779822, 40.617160060]),
+	proj4("EPSG:4326", "EPSG:3857", [14.972800441, 40.61716578]),
+	proj4("EPSG:4326", "EPSG:3857", [14.972820921, 40.61714121])
+]);
+
+const extent = inject("ol-extent");
+const selectedTagPos = ref([] as Coordinate);
+const selectedTagName = ref("");
+const selectConditions = inject("ol-selectconditions");
+const selectCondition = selectConditions.pointerMove;
+
+const featureSelected = (event: any) => {
+	if (event.selected.length == 1) {
+		const selectedFeature = event.selected[0];
+		selectedTagPos.value = extent.getCenter(
+			event.selected[0].getGeometry().extent_,
+		);
+		selectedTagName.value = selectedFeature.get('name')
+	} else {
+		selectedTagName.value = "";
+	}
+};
+
+const selectInteactionFilter = (feature: { values_: { name: undefined; }; }) => {
+	return feature.values_.name != undefined;
+};
 
 function resolutionChanged(event: any) {
 	currentResolution.value = event.target.getResolution();
@@ -284,7 +332,6 @@ const actionSheetButtons = [
 		},
 	},
 ];
-
 </script>
 
 <style scoped>
@@ -313,40 +360,62 @@ ion-content {
 			list-style-type: none;
 		}
 	}
-}
 
-.ol-map {
-	position: relative;
-	background: repeating-linear-gradient(45deg,
-			#fafffa,
-			#fffafa 6px,
-			#ffffff 6px,
-			#ffffff 12px);
-}
+	.ol-map {
+		position: relative;
+		background: repeating-linear-gradient(45deg,
+				#fafffa,
+				#fffafa 6px,
+				#ffffff 6px,
+				#ffffff 12px);
+	}
 
-.btn-map {
-	position: absolute;
-	z-index: 9;
-	background: var(--ol-background-color);
-	border-radius: 3px;
-	border: 1px solid lightgray;
-	width: 35px;
-	height: 35px;
-	font-size: 1.5rem;
-	padding: 0.24rem;
+	.btn-map {
+		position: absolute;
+		z-index: 9;
+		background: var(--ol-background-color);
+		border-radius: 3px;
+		border: 1px solid lightgray;
+		width: 35px;
+		height: 35px;
+		font-size: 1.5rem;
+		padding: 0.24rem;
 
-	ion-icon {
-		color: var(--ol-subtle-foreground-color)
+		ion-icon {
+			color: var(--ol-subtle-foreground-color)
+		}
+	}
+
+	.btn-locate {
+		left: 8px;
+		bottom: 70px;
+	}
+
+	.btn-layers {
+		right: 8px;
+		top: 6px;
+	}
+
+	.ol-map-loading:after {
+		content: "";
+		box-sizing: border-box;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 80px;
+		height: 80px;
+		margin-top: -40px;
+		margin-left: -40px;
+		border-radius: 50%;
+		border: 5px solid rgba(180, 180, 180, 0.6);
+		border-top-color: var(--vp-c-brand-1);
+		animation: spinner 0.6s linear infinite;
 	}
 }
 
-.btn-locate {
-	left: 8px;
-	bottom: 70px;
-}
-
-.btn-layers {
-	right: 8px;
-	top: 6px;
+@keyframes spinner {
+	to {
+		transform: rotate(360deg);
+	}
 }
 </style>
