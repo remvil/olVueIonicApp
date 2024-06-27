@@ -27,6 +27,7 @@
 		"@vueuse/core": "^10.10.0",
 		"axios": "^1.7.2",
 		"ionicons": "^7.0.0",
+		"lodash": "^4.17.21",
 		"ol": "^9.2.0",
 		"ol-contextmenu": "^5.4.0",
 		"proj4": "^2.11.0",

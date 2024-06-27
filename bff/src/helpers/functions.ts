@@ -213,19 +213,3 @@ export const getHospitalFakeAssets = (): HospitalAsset[] => {
 	];
 	return hospitalAssets;
 };
-
-export const getConvertedFeatures = (features: Feature[]) => {
-	return features.map((feature) => {
-		const {id, batteryLevel, tagId, name, description, floor, lon, lat} = feature.properties;
-		return {
-			id,
-			batteryLevel,
-			tagId,
-			name,
-			description,
-			floor,
-			lon,
-			lat,
-		};
-	});
-};

@@ -32,7 +32,6 @@
 						<ol-source-vector :format="geoJson" crossOrigin="anonymous" url="geojson/battipagliabbox.geojson" />
 					</ol-webgl-vector-layer>
 
-
 					<!-- Planimetry Layer -->
 					<ol-vector-layer>
 						<ol-source-vector :format="geoJson" crossOrigin="anonymous" :features="planimetriaFeatures" />
@@ -228,9 +227,7 @@ onMounted(async () => {
 			error: (err) => {
 				console.error('Error while fetching API Service:', err);
 			},
-			complete: () => {
-				loading.value = false;
-			}
+
 		});
 	} catch (error) {
 		console.error('Error while requesting API Service: ', error);

@@ -88,7 +88,7 @@ async function navigateToPageMap(lat: number, lon: number) {
 		const projectionEPSG3857 = proj4("EPSG:4326", "EPSG:3857", [lon, lat]);
 		const lonEPSG3857 = projectionEPSG3857[0];
 		const latEPSG3857 = projectionEPSG3857[1];
-		const url = `/tabs/navigate?x=${lonEPSG3857}&y=${latEPSG3857}&z=22&r=0&l=1111`;
+		const url = `/tabs/navigate?x=${lonEPSG3857}&y=${latEPSG3857}&z=23&r=0&l=1111`;
 		window.location.href = url; // Force full page reload
 	}, 200); // Adjust the timeout as needed
 }

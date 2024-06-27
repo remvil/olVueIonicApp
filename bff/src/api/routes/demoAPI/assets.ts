@@ -1,12 +1,11 @@
 import {FeatureCollection, Feature} from "./../../types";
 import express from "express";
-import {Observable, of} from "rxjs";
+import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
-import {getHospitalFakeAssets, getConvertedFeatures} from "../../../helpers/functions";
 import {Logger} from "../../../helpers/logger";
-import {log} from "console";
 import path from "path";
 import fs from "fs";
+var _ = require("lodash");
 
 function handleMissedLocationError(requiredLocation: string, res: any) {
 	if (!requiredLocation || (requiredLocation !== "salerno" && requiredLocation !== "battipaglia")) {
@@ -21,6 +20,12 @@ export const dummyAssetsRouter = express.Router();
  * /api/assets/list/{location}:
  *   get:
  *     summary: Restituisce la lista di tutti gli asset di una determinata location
+ *     parameters:
+ *       - in: path
+ *         name: location
+ *         required: true
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: Restituisce la lista degli asset
@@ -40,7 +45,7 @@ export const dummyAssetsRouter = express.Router();
  *     security:
  *       - Authorization: []
  */
-dummyAssetsRouter.get("/list/:location?", (req: any, res: any) => {
+dummyAssetsRouter.get("/list/:location", (req: any, res: any) => {
 	Logger.writeEvent(`Requested resources from  ${req.originalUrl} route `);
 
 	const requiredLocation = req.params.location.toLowerCase();
@@ -48,16 +53,18 @@ dummyAssetsRouter.get("/list/:location?", (req: any, res: any) => {
 	handleMissedLocationError(requiredLocation, res);
 
 	const geoJSONAssetsList = path.resolve(__dirname, `../../../../data/geojson/${requiredLocation}/assets.geojson`);
-	// Logger.writeTrace(`Reading assets from ${geoJSONAssetsList}`, 1);
-
 	const assets$ = new Observable((observer) => {
 		fs.readFile(geoJSONAssetsList, "utf8", (err: any, data: string) => {
 			if (err) {
 				observer.error({error: "Assets not Found"});
 			}
 			const dataObj: FeatureCollection = JSON.parse(data);
-
-			observer.next(getConvertedFeatures(dataObj.features));
+			const featuresArray = dataObj.features;
+			console.log(featuresArray);
+			let assetsFiltered = featuresArray.map((feature) =>
+				_.pick(feature.properties, ["id", "name", "description", "batteryLevel", "tagId", "floor", "lon", "lat"])
+			);
+			observer.next(assetsFiltered);
 			observer.complete();
 		});
 	});

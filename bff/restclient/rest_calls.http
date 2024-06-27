@@ -58,7 +58,7 @@ content-type: application/json
 
 GET http://185.169.239.178:8180/localsenseadmin/tag/getAllTagUpgrade HTTP/1.1
 content-type: application/json
-Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiIxNzYuMjQ1LjEzOS4yMDAiLCJleHAiOjE3MTkzNDk1NTEsInVpcCI6IjMzOTQyOTZhZDk3YjRlMjA3M2MzOTM0MjU0NTI2MTM2In0.KIy91DLdepkU6Pu0bCvYbVBk6OlD-e2RmDp5BFpbaPo
+Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiI5My42NS4xODkuNjYiLCJleHAiOjE3MTk1MjIyMTAsInVpcCI6IjMzOTQyOTZhZDk3YjRlMjA3M2MzOTM0MjU0NTI2MTM2In0.MTHjbAd7_arZ57wXNkLnrGcLgWijc3bn1VTPUtcE2LM
 
 {
     "username": "admin",
@@ -68,7 +68,7 @@ Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiIxNzYu
 
 GET http://185.169.239.178:8180/localsenseadmin/authorManage/getAllResource HTTP/1.1
 content-type: application/json
-Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiIxNzYuMjQ1LjEzOS4yMDAiLCJleHAiOjE3MTkzNDk1NTEsInVpcCI6IjMzOTQyOTZhZDk3YjRlMjA3M2MzOTM0MjU0NTI2MTM2In0.KIy91DLdepkU6Pu0bCvYbVBk6OlD-e2RmDp5BFpbaPo
+Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiI5My42NS4xODkuNjYiLCJleHAiOjE3MTk1MjIyMTAsInVpcCI6IjMzOTQyOTZhZDk3YjRlMjA3M2MzOTM0MjU0NTI2MTM2In0.MTHjbAd7_arZ57wXNkLnrGcLgWijc3bn1VTPUtcE2LM
 
 {
     "username": "admin",
@@ -76,12 +76,13 @@ Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiIxNzYu
 
 ### Get Layers
 
-GET http://185.169.239.178:8180/localsense/tag/getTagAreaAndVertex HTTP/1.1
+GET http://185.169.239.178:8180/localsense/tag/getTagAreaAndVertex?tagIds=217520344667621 HTTP/1.1
 content-type: application/json
-Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiIxNzYuMjQ1LjEzOS4yMDAiLCJleHAiOjE3MTkzNDk1NTEsInVpcCI6IjMzOTQyOTZhZDk3YjRlMjA3M2MzOTM0MjU0NTI2MTM2In0.KIy91DLdepkU6Pu0bCvYbVBk6OlD-e2RmDp5BFpbaPo
+Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiI5My42NS4xODkuNjYiLCJleHAiOjE3MTk1MjIyMTAsInVpcCI6IjMzOTQyOTZhZDk3YjRlMjA3M2MzOTM0MjU0NTI2MTM2In0.MTHjbAd7_arZ57wXNkLnrGcLgWijc3bn1VTPUtcE2LM
 
 {
     "username": "admin",
+		"tagIds": "217520344667621",
 }
 
 
@@ -89,10 +90,20 @@ Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiIxNzYu
 
 GET http://185.169.239.178:8180/localsenseadmin/setting/getLayers HTTP/1.1
 content-type: application/json
-Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiIxNzYuMjQ1LjEzOS4yMDAiLCJleHAiOjE3MTkzNDk1NTEsInVpcCI6IjMzOTQyOTZhZDk3YjRlMjA3M2MzOTM0MjU0NTI2MTM2In0.KIy91DLdepkU6Pu0bCvYbVBk6OlD-e2RmDp5BFpbaPo
+Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiI5My42NS4xODkuNjYiLCJleHAiOjE3MTk1MjIyMTAsInVpcCI6IjMzOTQyOTZhZDk3YjRlMjA3M2MzOTM0MjU0NTI2MTM2In0.MTHjbAd7_arZ57wXNkLnrGcLgWijc3bn1VTPUtcE2LM
 
 {
-    "tagIds": "256481716798220",
+    "tagIds": "132317272721037",
+}
+
+### Get Tag Real Time Status
+
+GET http://185.169.239.178:8180/localsense/androidApp/isTagLocated?tagIds=217520344667621 HTTP/1.1
+content-type: application/json
+Token: eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJhZG1pbiIsInN1YiI6InRvcGljIiwiaXAiOiI5My42NS4xODkuNjYiLCJleHAiOjE3MTk1MjIyMTAsInVpcCI6IjMzOTQyOTZhZDk3YjRlMjA3M2MzOTM0MjU0NTI2MTM2In0.MTHjbAd7_arZ57wXNkLnrGcLgWijc3bn1VTPUtcE2LM
+
+{
+    "tagIds": "217520344667621",
 }
 
 # "217520344667621": "Badge Ospiti",

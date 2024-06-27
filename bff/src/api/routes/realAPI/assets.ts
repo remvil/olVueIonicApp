@@ -5,30 +5,6 @@ import {getHospitalFakeAssets} from "../../../helpers/functions";
 
 const assetsRouter = express.Router();
 
-/**
- * @swagger
- * /api/assets/{location}:
- *   get:
- *     summary: Restituisce la lista di tutti gli asset di una determinata location
- *     responses:
- *       200:
- *         description: Restituisce la lista degli asset
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/HospitalAsset'
- *       404:
- *         description: >
- *            Riporta un messaggio che specifica che non è possibile trovare la risorsa richiesta
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/GenericError'
- *     tags:
- *       - Assets
- *     security:
- *       - Authorization: []
- */
 assetsRouter.get("/:location?", (req: any, res: any) => {
 	console.log("TEST: Hello from  '/assets//:location?' route ");
 	const resp$ = of("TEST: Hello from  '/assets//:location?' route ");
