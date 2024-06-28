@@ -60,7 +60,6 @@ dummyAssetsRouter.get("/list/:location", (req: any, res: any) => {
 			}
 			const dataObj: FeatureCollection = JSON.parse(data);
 			const featuresArray = dataObj.features;
-			console.log(featuresArray);
 			let assetsFiltered = featuresArray.map((feature) =>
 				_.pick(feature.properties, ["id", "name", "description", "batteryLevel", "tagId", "floor", "lon", "lat"])
 			);

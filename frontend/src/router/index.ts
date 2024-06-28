@@ -2,6 +2,7 @@ import {createRouter, createWebHistory} from "@ionic/vue-router";
 import {RouteRecordRaw} from "vue-router";
 import TabsPage from "../views/TabsPage.vue";
 import TestPage from "../views/TestPage.vue";
+import Login from "../views/LoginPage.vue";
 
 const routes: Array<RouteRecordRaw> = [
 	{
@@ -29,10 +30,15 @@ const routes: Array<RouteRecordRaw> = [
 				component: () => import("@/views/TabAssets.vue"),
 			},
 		],
+		meta: { requiresAuth: true }
 	},
 	{
 		path: "/test/",
 		component: TestPage,
+	},
+	{
+		path: "/login",
+		component: Login,
 	},
 ];
 
@@ -41,11 +47,19 @@ const router = createRouter({
 	routes,
 });
 
+// Required Auth routes check
 router.beforeEach((to, from, next) => {
 	const url = to.fullPath;
-	const existingState = history.state || {};
-	history.replaceState({...existingState}, "", url);
-	next();
+	const authToken = localStorage.getItem('authToken');
+  const authRequired = to.matched.some(record => record.meta.requiresAuth);
+
+	if (authRequired && (!authToken || authToken === 'undefined')) {
+		next('/login');
+	} else {
+		const existingState = history.state || {};
+		history.replaceState({...existingState}, "", url);
+		next();
+	}
 });
 
 export default router;
