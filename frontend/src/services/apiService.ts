@@ -17,8 +17,13 @@ export function fetchAPIPromise(endpoint: string) {
 		});
 }
 
-export function fetchAPIObservable(endpoint: string): Observable<any> {
-	return from(useFetch(`${BASE_URL}/${endpoint}`).json()).pipe(
+export function fetchAPIObservable(endpoint: string, options: any ={}): Observable<any> {
+	const authToken = localStorage.getItem('authToken');
+  const headers = {
+    Token: `${authToken}`,
+    ...options.headers,
+  };
+	return from(useFetch(`${BASE_URL}/${endpoint}`, headers).json()).pipe(
 		map(({data, error}) => {
 			if (error.value) {
 				throw new Error(`Obs API Error: ${error.value.message}`);
@@ -30,4 +35,30 @@ export function fetchAPIObservable(endpoint: string): Observable<any> {
 			return throwError(error);
 		})
 	);
+}
+
+export async function login(credentials: { username: string; password: string }) {
+  const { data, error } = await useFetch<any>('http://185.169.239.178:8180/localsenseadmin/login').post(credentials);
+
+  if (error.value || !data.value) {
+    console.error(error.value);
+    localStorage.removeItem('authToken'); // Cancella il token vecchio in caso di errore
+    throw new Error('Login failed'); // Lancia un errore per gestire il fallimento del login nell'interfaccia utente
+  } else {
+		if(data.value.code === -1){
+			console.log('non è riuscito'); return;
+		}
+    localStorage.setItem('authToken', data.value.token); // Memorizza il token
+    return data.value; // Ritorna i dati di risposta per ulteriori operazioni
+  }
+}
+
+// Funzione per impostare il token
+export function setToken(token: string) {
+  localStorage.setItem('authToken', token);
+}
+
+// Funzione per ottenere il token memorizzato
+export function getToken() {
+  return localStorage.getItem('authToken');
 }
