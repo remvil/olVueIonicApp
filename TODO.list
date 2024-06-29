@@ -1,4 +1,3 @@
-- Nella login gestire gli errori
-- Importare un sistema di notifica tipo sticky 
 - Eseguire il corretto encoding della password
 - Gestire tutti i possibili casi della login
+- Gestire Logout e controllo sulle api
