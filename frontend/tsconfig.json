@@ -15,7 +15,8 @@
 		"typeRoots": ["./types", "./node_modules/@types"],
     "paths": {
       "@/*": ["./src/*"],
-      "@vueuse/core": ["./node_modules/@vueuse/core"]
+      "@vueuse/core": ["./node_modules/@vueuse/core"],
+			"@services/*": ["./src/services/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "types/**/*"],

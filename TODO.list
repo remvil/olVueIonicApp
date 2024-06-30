@@ -1,3 +1,4 @@
 - Eseguire il corretto encoding della password
 - Gestire tutti i possibili casi della login
 - Gestire Logout e controllo sulle api
+- Gestire meglio redirect da TabAssets

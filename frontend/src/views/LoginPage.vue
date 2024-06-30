@@ -35,22 +35,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 import { useIonRouter, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonIcon, IonInput, IonItem, IonButton } from '@ionic/vue';
 import { eye, eyeOff, lockClosed, personCircle } from 'ionicons/icons';
-import { login } from '@/services/apiService';
+import { login, getToken } from '@/services/apiService';
 import { TextFieldTypes } from '@ionic/core';
 import type { ExtAPIResponse } from '../models/apiResponses';
 import { presentToast } from '@/services/ionicComponentsService';
-
 
 const credentials = ref({ username: '', password: '' });
 const router = useIonRouter();
 const logoPath = '/img/login-logo.png'; // Sostituisci con il percorso della tua immagine
 const passwordFieldType = ref<TextFieldTypes>('password');
 
-const handleLogin = async () => {
+// Check for token on component mount
+onBeforeMount(() => {
+	const token = getToken();
+	if (token) {
+		router.push('/tabs/home');
+	}
+});
 
+const handleLogin = async () => {
 	try {
 		const loginResp = await login(credentials.value);
 		const { msg, code }: ExtAPIResponse = JSON.parse(loginResp);
@@ -58,8 +64,8 @@ const handleLogin = async () => {
 			presentToast('bottom', msg, 'warning');
 		}
 		if (code === 200) {
-			presentToast('middle', msg, 'success')
-			router.push('/tabs/navigate');
+			presentToast('bottom', `Welcome ${credentials.value.username}!`, 'success')
+			router.push('/tabs/home');
 		}
 	} catch (error) {
 		console.error(error);

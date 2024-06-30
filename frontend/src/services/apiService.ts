@@ -77,3 +77,7 @@ export function getToken() {
 export function removeToken() {
 	return localStorage.removeItem("authToken");
 }
+
+export function handleLogout() {
+	localStorage.remove();
+}
