@@ -79,5 +79,5 @@ export function removeToken() {
 }
 
 export function handleLogout() {
-	localStorage.remove();
+	removeToken();
 }

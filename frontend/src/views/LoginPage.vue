@@ -5,8 +5,10 @@
 				<ion-title>Asset Locator</ion-title>
 			</ion-toolbar>
 		</ion-header>
-		<ion-content class="ion-padding ion-center">
-			<br /><br />
+		<ion-content class="ion-padding">
+			<!-- <ion-grid class="full-height">
+				<ion-row class="ion-justify-content-center ion-align-items-center full-height">
+					<ion-col size-md="6" size-lg="4" size-xs="12" class="ion-text-center"> -->
 			<img :src="logoPath" class="login-logo" alt="Logo">
 			<form @submit.prevent="handleLogin">
 				<ion-item>
@@ -26,10 +28,13 @@
 				</ion-item>
 				<br />
 				<ion-button expand="block" type="submit">Login</ion-button>
-				<ion-button expand="block" @click="presentToast('bottom', 'testo di esempio')">Present Toast At the
-					Top</ion-button>
-
+				<p class="support-text">
+					Problems with login? <a href="mailto:support@company.ltd">Write us</a>
+				</p>
 			</form>
+			<!-- </ion-col>
+				</ion-row>
+			</ion-grid> -->
 		</ion-content>
 	</ion-page>
 </template>
@@ -45,8 +50,10 @@ import { presentToast } from '@/services/ionicComponentsService';
 
 const credentials = ref({ username: '', password: '' });
 const router = useIonRouter();
-const logoPath = '/img/login-logo.png'; // Sostituisci con il percorso della tua immagine
+const logoPath = 'images/login-logo.png';
 const passwordFieldType = ref<TextFieldTypes>('password');
+const errorMessage = ref<string | null>(null); // Ref per il messaggio di errore
+
 
 // Check for token on component mount
 onBeforeMount(() => {
@@ -57,6 +64,20 @@ onBeforeMount(() => {
 });
 
 const handleLogin = async () => {
+	errorMessage.value = null; // Reset del messaggio di errore
+
+	if (!credentials.value.username) {
+		errorMessage.value = 'Username field is required';
+		presentToast('bottom', 'Username field is required', 'danger')
+		return;
+	}
+
+	if (!credentials.value.password) {
+		presentToast('bottom', 'Password field is required', 'danger')
+		errorMessage.value = 'Password field is required';
+		return;
+	}
+
 	try {
 		const loginResp = await login(credentials.value);
 		const { msg, code }: ExtAPIResponse = JSON.parse(loginResp);
@@ -85,11 +106,11 @@ const togglePasswordVisibility = () => {
 	max-width: 150px;
 }
 
-.content-center {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
+.full-height {
 	height: 100%;
+}
+
+.support-text {
+	font-size: 0.7rem;
 }
 </style>

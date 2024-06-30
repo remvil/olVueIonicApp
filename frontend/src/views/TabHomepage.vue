@@ -23,7 +23,7 @@ import { useIonRouter, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, Ion
 import { ref } from 'vue';
 
 const router = useIonRouter();
-const logoPath = ref("/img/presentation-logo.png"); // Replace with the path to your logo
+const logoPath = ref("images/presentation-logo.png"); // Replace with the path to your logo
 
 const navigateToMap = () => {
 	router.push('/tabs/navigate'); // Adjust the route as needed

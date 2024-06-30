@@ -11,6 +11,7 @@ export default defineConfig({
 			"@": path.resolve(__dirname, "./src"),
 			"@vueuse/core": path.resolve(__dirname, "node_modules/@vueuse/core"),
 			"@services": path.resolve(__dirname, "./src/services"),
+			"@images": path.resolve(__dirname, "./src/public/images"),
 		},
 	},
 	test: {
