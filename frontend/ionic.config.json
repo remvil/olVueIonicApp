@@ -1,7 +1,7 @@
 {
-  "name": "olVueIonicApp",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "vue-vite"
+	"name": "Asset Locator",
+	"integrations": {
+		"capacitor": {}
+	},
+	"type": "vue-vite"
 }

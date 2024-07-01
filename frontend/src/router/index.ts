@@ -3,6 +3,7 @@ import {RouteRecordRaw} from "vue-router";
 import TabsPage from "../views/TabsPage.vue";
 import TestPage from "../views/TestPage.vue";
 import Login from "../views/LoginPage.vue";
+import {getToken} from "@/services/storageService";
 
 const routes: Array<RouteRecordRaw> = [
 	{
@@ -30,7 +31,7 @@ const routes: Array<RouteRecordRaw> = [
 				component: () => import("@/views/TabAssets.vue"),
 			},
 		],
-		meta: { requiresAuth: true }
+		meta: {requiresAuth: true},
 	},
 	{
 		path: "/test/",
@@ -48,13 +49,14 @@ const router = createRouter({
 });
 
 // Required Auth routes check
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
 	const url = to.fullPath;
-	const authToken = localStorage.getItem('authToken');
-  const authRequired = to.matched.some(record => record.meta.requiresAuth);
+	const authToken = await getToken();
 
-	if (authRequired && (!authToken || authToken === 'undefined')) {
-		next('/login');
+	const authRequired = to.matched.some((record) => record.meta.requiresAuth);
+
+	if (authRequired && !authToken) {
+		next("/login");
 	} else {
 		const existingState = history.state || {};
 		history.replaceState({...existingState}, "", url);

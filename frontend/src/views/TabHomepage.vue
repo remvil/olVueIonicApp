@@ -2,52 +2,55 @@
 	<ion-page>
 		<ion-header>
 			<ion-toolbar>
-				<ion-title>Home page</ion-title>
+				<ion-title>Welcome</ion-title>
 			</ion-toolbar>
 		</ion-header>
-		<ion-content :fullscreen="true">
-			<ion-header collapse="condense">
-				<ion-toolbar>
-					<ion-title size="large">Home page</ion-title>
-				</ion-toolbar>
-			</ion-header>
-			<HomeContainer size="small" name="This app helps you navigate inside buildings and find rooms and objects." />
+		<ion-content class="ion-padding">
+			<div class="presentation-container">
+				<img :src="logoPath" class="presentation-logo" alt="Logo">
+				<h2>Welcome to Asset Locator</h2>
+				<p>With this application, you can navigate within the building and search for assets. The map view and search
+					functionality will help you orient yourself as quickly as possible.</p>
+				<ion-button expand="block" @click="navigateToMap">Get Started</ion-button>
+				<ion-button expand="block" @click="navigateToAssetsList">Search Asset</ion-button>
+			</div>
 		</ion-content>
 	</ion-page>
 </template>
 
 <script setup lang="ts">
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue';
-import HomeContainer from '@/components/HomeContainer.vue';
+import { useIonRouter, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButton } from '@ionic/vue';
+import { ref } from 'vue';
+
+const router = useIonRouter();
+const logoPath = ref("images/presentation-logo.png"); // Replace with the path to your logo
+
+const navigateToMap = () => {
+	router.push('/tabs/navigate'); // Adjust the route as needed
+};
+const navigateToAssetsList = () => {
+	router.push('/tabs/search'); // Adjust the route as needed
+};
 </script>
 
-<style scoped>
-.welcome-page {
-	--ion-background-color: #f0f0f0;
-	/* Colore di sfondo della pagina */
-}
-
-.welcome-container {
+<style>
+.presentation-container {
 	text-align: center;
-	/* Centra il contenuto */
+	padding: 20px;
 }
 
-.app-logo {
-	width: 150px;
-	height: 150px;
+.presentation-logo {
+	display: block;
+	margin: 0 auto;
+	max-width: 150px;
+	padding-bottom: 20px;
+}
+
+h2 {
 	margin-bottom: 20px;
 }
 
-/* Stili per il testo */
-.ion-text-center {
-	text-align: center;
-}
-
-.ion-padding-top {
-	padding-top: 20px;
-}
-
-.ion-padding {
-	padding: 0 20px;
+p {
+	margin-bottom: 40px;
 }
 </style>

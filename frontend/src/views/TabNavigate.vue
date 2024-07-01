@@ -411,6 +411,16 @@ ion-content {
 		border-top-color: var(--vp-c-brand-1);
 		animation: spinner 0.6s linear infinite;
 	}
+
+	.overlay-content {
+		background: white;
+		background-color: white;
+		border: 1px solid #00000044;
+		border-radius: 3px;
+		box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+		padding: 10px;
+		color: grey;
+	}
 }
 
 @keyframes spinner {
