@@ -43,10 +43,11 @@
 import { onBeforeMount, ref } from 'vue';
 import { useIonRouter, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonIcon, IonInput, IonItem, IonButton } from '@ionic/vue';
 import { eye, eyeOff, lockClosed, personCircle } from 'ionicons/icons';
-import { login, getToken } from '@/services/apiService';
 import { TextFieldTypes } from '@ionic/core';
-import type { ExtAPIResponse } from '../models/apiResponses';
+import type { ExtAPIResponse } from '../models/apiData';
+import { login } from '@/services/apiService';
 import { presentToast } from '@/services/ionicComponentsService';
+import { getToken } from '@/services/storageService';
 
 const credentials = ref({ username: '', password: '' });
 const router = useIonRouter();
@@ -58,9 +59,11 @@ const errorMessage = ref<string | null>(null); // Ref per il messaggio di errore
 // Check for token on component mount
 onBeforeMount(() => {
 	const token = getToken();
-	if (token) {
-		router.push('/tabs/home');
-	}
+	token.then((value) => {
+		if (value !== "") {
+			router.push('/tabs/home');
+		}
+	});
 });
 
 const handleLogin = async () => {

@@ -4,3 +4,9 @@ export type ExtAPIResponse = {
 	msg: string;
 	data: any;
 };
+
+export type UserObject = {
+	id?: number;
+	name?: string;
+	token: string;
+};

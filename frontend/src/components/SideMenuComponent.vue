@@ -1,5 +1,5 @@
 <template>
-	<ion-menu side="start" menu-id="first" content-id="main-content">
+	<ion-menu side="start" menu-id="sidemenu" content-id="main-content">
 		<ion-header>
 			<ion-toolbar>
 				<ion-title>Menu</ion-title>
@@ -14,7 +14,6 @@
 					to streamline and enhance the asset management process for businesses. Launched in 2024, this application
 					leverages the latest in technology to provide users with an intuitive and efficient platform for tracking and
 					managing assets across various locations.</p>
-
 			</div>
 			<ion-list class="logout-list">
 				<ion-item button @click="logout">
@@ -27,14 +26,14 @@
 </template>
 
 <script setup lang="ts">
-// import { ref } from 'vue';
-import { useIonRouter, IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonIcon, IonLabel } from '@ionic/vue';
+import { useIonRouter, IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonIcon, IonLabel, menuController } from '@ionic/vue';
 import { logOut as logOutIcon } from 'ionicons/icons';
-import { handleLogout } from '@/services/apiService';
+import { logout as handleLogout } from '@/services/apiService';
 
 const router = useIonRouter();
 
 const logout = () => {
+	menuController.close('sidemenu');
 	handleLogout();
 	router.push('/login');
 };

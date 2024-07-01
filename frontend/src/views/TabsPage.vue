@@ -23,14 +23,13 @@
 						<ion-menu-toggle>
 							<ion-icon :icon="person" />
 						</ion-menu-toggle>
-						<!-- <ion-button>Click to open the menu</ion-button>-->
 						<ion-label>Profile</ion-label>
 					</ion-tab-button>
 
 				</ion-tab-bar>
 			</ion-tabs>
 		</div>
-		<SideMenuComponent />
+		<SideMenuComponent ref="childCompRef" />
 	</ion-page>
 
 </template>

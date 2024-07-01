@@ -3,7 +3,7 @@ import {RouteRecordRaw} from "vue-router";
 import TabsPage from "../views/TabsPage.vue";
 import TestPage from "../views/TestPage.vue";
 import Login from "../views/LoginPage.vue";
-import {getToken} from "@/services/apiService";
+import {getToken} from "@/services/storageService";
 
 const routes: Array<RouteRecordRaw> = [
 	{
@@ -49,13 +49,15 @@ const router = createRouter({
 });
 
 // Required Auth routes check
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
 	const url = to.fullPath;
-	const authToken = getToken();
+	const authToken = await getToken();
+	console.log(authToken);
+	
 
 	const authRequired = to.matched.some((record) => record.meta.requiresAuth);
 
-	if (authRequired && (!authToken || authToken === "undefined")) {
+	if (authRequired && !authToken) {
 		next("/login");
 	} else {
 		const existingState = history.state || {};

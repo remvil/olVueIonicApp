@@ -1,9 +1,10 @@
-import {ExtAPIResponse} from "./../models/apiResponses";
+import {ExtAPIResponse} from "../models/apiData";
 import {useFetch} from "@vueuse/core";
 import {from, Observable, of, throwError} from "rxjs";
 import {catchError, map} from "rxjs/operators";
 import {Md5} from "ts-md5";
 import {presentToast} from "./ionicComponentsService";
+import {getToken, removeStoredUser, setStoredUser} from "@/services/storageService";
 
 const BASE_URL = "http://localhost:3000/api";
 
@@ -21,7 +22,7 @@ export function fetchAPIPromise(endpoint: string) {
 }
 
 export function fetchAPIObservable(endpoint: string, options: any = {}): Observable<any> {
-	const authToken = localStorage.getItem("authToken");
+	const authToken = getToken();
 	if (!authToken) {
 		presentToast("bottom", "You are not logged in", "danger");
 		return of(); // TODO voi of() mgmt
@@ -52,32 +53,24 @@ export async function login(credentials: {username: string; password: string}) {
 
 	const apiResp: ExtAPIResponse = JSON.parse(data.value);
 	if (error.value || !apiResp) {
-		removeToken();
+		removeStoredUser();
 		throw new Error("Login failed");
 	}
 
 	// Wrong credential case
 	if (apiResp.code === -1) {
-		removeToken();
+		removeStoredUser();
 	}
 
 	// Success authentication
 	if (apiResp.code === 200) {
-		localStorage.setItem("authToken", apiResp.data);
+		setStoredUser({name: "Max", token: apiResp.data});
 	}
 
 	return data.value;
 }
 
-// Return authToken
-export function getToken() {
-	return localStorage.getItem("authToken");
-}
-
-export function removeToken() {
-	return localStorage.removeItem("authToken");
-}
-
-export function handleLogout() {
-	removeToken();
+export async function logout() {
+	removeStoredUser();
+	presentToast("bottom", "Logged out", "success");
 }
