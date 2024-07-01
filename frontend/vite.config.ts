@@ -2,10 +2,20 @@ import legacy from "@vitejs/plugin-legacy";
 import vue from "@vitejs/plugin-vue";
 import path from "path";
 import {defineConfig} from "vitest/config";
+import {VitePWA} from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [vue(), legacy()],
+	plugins: [
+		vue(),
+		legacy(),
+		VitePWA({
+			registerType: "autoUpdate",
+			devOptions: {
+				enabled: true,
+			},
+		}),
+	],
 	resolve: {
 		alias: {
 			"@": path.resolve(__dirname, "./src"),
