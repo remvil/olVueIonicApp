@@ -84,6 +84,7 @@ const handleLogin = async () => {
 	try {
 		const loginResp = await login(credentials.value);
 		const { msg, code }: ExtAPIResponse = JSON.parse(loginResp);
+
 		if (code === -1) {
 			presentToast('bottom', msg, 'warning');
 		}
@@ -92,6 +93,8 @@ const handleLogin = async () => {
 			router.push('/tabs/home');
 		}
 	} catch (error) {
+		const msg = "Oops! It looks like there's a problem connecting to our servers. Please try again in a few moments.";
+		presentToast('bottom', msg, 'warning');
 		console.error(error);
 	}
 };

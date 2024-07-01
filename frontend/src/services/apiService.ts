@@ -6,14 +6,12 @@ import {Md5} from "ts-md5";
 import {presentToast} from "./ionicComponentsService";
 import {getToken, removeStoredUser, setStoredUser} from "@/services/storageService";
 
-const BASE_URL = "http://localhost:3000/api";
+const {VITE_API_SALT, VITE_DEMO_API_BASE_URL, VITE_PROD_API_BASE_URL} = import.meta.env;
 
 export function fetchAPIPromise(endpoint: string) {
-	return useFetch(`${BASE_URL}/${endpoint}`)
+	return useFetch(`${VITE_DEMO_API_BASE_URL}/${endpoint}`)
 		.json()
 		.then(({data, error}) => {
-			console.log(data);
-
 			if (error.value) {
 				throw new Error(`Errore durante la richiesta API: ${error.value.message}`);
 			}
@@ -25,14 +23,14 @@ export function fetchAPIObservable(endpoint: string, options: any = {}): Observa
 	const authToken = getToken();
 	if (!authToken) {
 		presentToast("bottom", "You are not logged in", "danger");
-		return of(); // TODO voi of() mgmt
+		return of();
 	}
 
 	const headers = {
 		Token: `${authToken}`,
 		...options.headers,
 	};
-	return from(useFetch(`${BASE_URL}/${endpoint}`, headers).json()).pipe(
+	return from(useFetch(`${VITE_DEMO_API_BASE_URL}/${endpoint}`, headers).json()).pipe(
 		map(({data, error}) => {
 			if (error.value) {
 				throw new Error(`Obs API Error: ${error.value.message}`);
@@ -47,9 +45,9 @@ export function fetchAPIObservable(endpoint: string, options: any = {}): Observa
 }
 
 export async function login(credentials: {username: string; password: string}) {
-	credentials.password = Md5.hashStr(credentials.password);
-	credentials.password = "3394296ad97b4e2073c3934254526136";
-	const {data, error} = await useFetch<any>("http://185.169.239.178:8180/localsenseadmin/login").post(credentials);
+	credentials.password = Md5.hashStr(Md5.hashStr(credentials.password) + VITE_API_SALT);
+
+	const {data, error} = await useFetch<any>(`${VITE_PROD_API_BASE_URL}/login`).post(credentials);
 
 	const apiResp: ExtAPIResponse = JSON.parse(data.value);
 	if (error.value || !apiResp) {

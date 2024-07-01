@@ -52,8 +52,6 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
 	const url = to.fullPath;
 	const authToken = await getToken();
-	console.log(authToken);
-	
 
 	const authRequired = to.matched.some((record) => record.meta.requiresAuth);
 
